@@ -12,7 +12,7 @@ class ACategoriser(unittest.TestCase):
     def setUp(self):
         self.assignments = load_assignments()
         data = helper.load_transaction_data()
-        self.transactions = parsers.parse_transactions(data)
+        self.transactions = parsers.parse_transactions_data(data)
 
     def test_can_assign_a_transaction_1(self):
         trans = self.transactions[1]  # Metrogas
