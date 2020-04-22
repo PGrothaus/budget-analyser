@@ -1,0 +1,61 @@
+Transport:
+  Peaje:
+    - descripcion: Pac Costanera Norte
+  Car:
+    - descripcion: Pago En Tesoreria.cl*
+      fecha: 20200401 10:35:36
+
+Salud:
+  Sports:
+    - descripcion: Traspaso A:Club De Tenis Providen
+    - descripcion: Traspaso A:Mauro Rodo Soared
+
+Servicios:
+  Domésticos:
+    - descripcion: Traspaso A:Patricia Munoz Betanco
+    - descripcion: Pago En Previred.com*
+      threshold: montoMovimiento,<,125000
+  Internet:
+    - descripcion: Pac Vtr Wireless S.a.
+  Bancarios:
+    - descripcion: Comision Admin. Mensual Plan Cuenta Corriente
+    - descripcion: Cargo Seguro Proteccion Bancaria
+  Water:
+    - descripcion: Pac Aguas Andinas Sa
+  Gas:
+    - descripcion: Pac Metrogas Sa
+  Gastos Comunes:
+    - descripcion: Traspaso A:Comunidad Edificio Sta
+
+
+Supermercados:
+  Fruterra:
+    - descripcion: Pago:fruterra
+  Cornershops:
+    - descripcion: Pago:maria Luisa Diaz
+
+
+Otros Gastos:
+  Efectivo:
+    - descripcion: Giro Cajero Automatico             *
+
+
+Ingresos:
+  Sueldo:
+    - descripcion: Traspaso De:Lets Talk Spa
+
+  Devoluciones:
+    - descripcion: Pago:proveedores 0762966190
+
+  Rendimiendos:
+    - descripcion: Abono Por Captaciones
+
+
+Otros:
+  sin_efecto:
+    - descripcion: Traspaso A:Valeria Razeto Caceres
+    - descripcion: Traspaso De:Valeria Razeto Caceres
+    - descripcion: Cargo Por Pago Tc
+    - descripcion: Pago Tarjeta De Credito
+    - descripcion: Pago En Previred.com*
+      threshold: montoMovimiento,>=,500000
