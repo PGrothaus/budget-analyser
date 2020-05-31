@@ -1,0 +1,9 @@
+{% if categorisationrule_list %}
+    <ul>
+    {% for rule in categorisationrule_list %}
+        <li>{{ rule.name }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No rules.</p>
+{% endif %}

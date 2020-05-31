@@ -1,0 +1,6 @@
+<form method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Update">
+</form>
+
+<p><a href="http://127.0.0.1:8000/transactions/uncategorized">Return to uncategorized transactions</a></p>

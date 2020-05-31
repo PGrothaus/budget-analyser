@@ -1,0 +1,9 @@
+{% if transaction_list %}
+    <ul>
+    {% for transaction in transaction_list %}
+        <li><a href="/transactions/edit/{{ transaction.id }}">{{ transaction.description }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No transactions.</p>
+{% endif %}

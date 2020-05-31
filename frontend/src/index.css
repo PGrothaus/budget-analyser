@@ -1,0 +1,111 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+:root {
+  --main-bg: #FFF;/*linear-gradient(180deg,#606c88 0,#3f4c6b);*/
+  --main-color: #000;
+  --secondary-bg: #F4F5F7;
+}
+
+.jumbotron {
+    height: 100px;
+    text-align: center;
+    vertical-align: middle;
+    background-color: #FFFFFF;
+}
+
+.container{
+    min-width: 1350px;
+}
+
+/* Pie chart */
+.data-path:hover {
+  cursor: pointer;
+}
+
+.left-column {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.center-column {
+  display: flex;
+  justify-content: center;
+}
+
+.right-column {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.data-text {
+  transition: transform .2s ease-in-out;
+  fill: var(--main-color);
+}
+
+.data-text__value {
+  font-size: 14rem;
+  opacity: 0;
+}
+
+.data-text__name {
+  opacity: 0;
+}
+
+.data-tspan__name {
+  font-size: 4rem;
+}
+
+.data-tspan__value {
+  font-size: 4rem;
+}
+
+.data-text__value.data-text--show {
+  transform: translateY(-1.5rem);
+  animation: fadeGraphTextIn .5s forwards;
+}
+.data-text__name.data-text--show {
+  transform: translateY(1.5rem);
+  animation: fadeGraphTextIn .5s forwards;
+}
+
+.data-text:hover {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+.legend {
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+.legend:hover circle,
+.legend:hover text {
+  transform: scale(1.4);
+}
+
+.legend-text {
+  fill: var(--main-color);
+}
+
+@keyframes fadeGraphTextIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

@@ -1,0 +1,56 @@
+import lib
+import lib.parsers
+import json
+json.loads('abc')
+json.load('abc')
+json.loads('abc')
+json.loads('{abc}')
+json.loads("abc"))
+json.loads("abc")
+json.loads(b"abc")
+json.dumps("abc")
+json.loads('"abc"')
+import json
+json.loads('"{"key": "description", "method": "==", "value": "Pago Tarjeta De Credito"}"')
+json.loads('{"key": "description", "method": "==", "value": "Pago Tarjeta De Credito"}')
+(3==3) and True)
+(3==3) and True
+import unittest
+s = "AHSHHS KSHS""
+s = "AHSHHS KSHS"
+s.lower()
+s.lower().capitalize()
+import twill.shell
+twill.shell.main()
+go http://www.planvital.cl
+formvalue 1 txbLoginRut 25801702-1
+formvalue 1 txtbLoginPassword Arti2510
+submit
+show
+go http://www.planvital.cl
+import twill.shell
+twill.shell.main()
+go https://www.planvital.cl
+formvalue 2 txbLoginRut 1111111-1
+formvalue 1 txbLoginRut 1111111-1
+formvalue 1 txtbLoginPassword abcde
+submit 1
+import twill.shell
+twill.shell.main()
+go https://www.planvital.cl
+formvalue 1 txbLoginRut 1111111-1
+formvalue 1 txtbLoginPassword abcde
+submit 3
+formvalue 1 txbLoginRut 1111111-1
+go https://www.planvital.cl
+formvalue 1 txbLoginRut 1111111-1
+formvalue 1 txtbLoginPassword abcde
+submit dnn_pvLoginResponsivo_cmdIngresar
+submit 4
+import twill.shell
+twill.shell.main()
+go https://login.bancochile.cl/bancochile-web/persona/login/index.html#/login
+formvalue 1 username2 1111111-1
+formvalue 1 username2 111111
+formvalue 1 username 111111
+formvalue 1 username 111111-1
