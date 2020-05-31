@@ -1,0 +1,38 @@
+{
+  "BROWSER": {
+    "codprd": "01000",
+    "xls": "0",
+    "TRANS": "vt_CartolaCtaCte"
+  },
+  "lstCartolaCtaCte": {
+    "moneda": "PESOS    ",
+    "codseg": "S",
+    "movimientos": [{
+      "signomov": "+",
+      "montomovfmt": "10.000",
+      "codmov": "UD",
+      "fecmov": "280120",
+      "saldolin": "000000099781200",
+      "fecmovfmt": "28/01/2020",
+      "tipomov": "C",
+      "sigsaldlin": "+",
+      "numdoc": "00006709",
+      "montomov": "000000001000000",
+      "glosa": "COMPRA                           "
+    }, {
+      "signomov": "+",
+      "montomovfmt": "17.370",
+      "codmov": "VR",
+      "fecmov": "280120",
+      "saldolin": "000000098044200",
+      "fecmovfmt": "28/01/2020",
+      "tipomov": "A",
+      "sigsaldlin": "+",
+      "numdoc": "00004300",
+      "montomov": "000000001737000",
+      "glosa": "ABONO                       "
+    }],
+    "salcontlc": "000000000000000",
+    "totabo": "000001588628600"
+  }
+}

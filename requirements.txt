@@ -1,3 +1,21 @@
+# Database
+psycopg2-binary
+
+# Django
+django
+djangorestframework
+django-prettyjson
+django-filter
+djangorestframework-simplejwt
+django-cors-headers
+
+# Formatting
+markdown
+
+# Logical
+json-logic-qubit
+
+# Testing
 mock
 pytest
 pyyaml

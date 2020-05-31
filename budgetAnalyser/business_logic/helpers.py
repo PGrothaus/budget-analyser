@@ -1,0 +1,34 @@
+import json
+import os
+
+from json_logic import jsonLogic
+
+from api.serializers import TransactionSerializer
+
+
+def filepath_to_store_uploaded_transaction(user, bank, account, uploaded_at):
+    dir = os.path.join("/tmp/user_data/", str(user.id), bank.name, account.name, 'uploaded_transaction_files')
+    filename = "{}.json".format(uploaded_at)
+    return _format_filepath(os.path.join(dir, filename))
+
+
+def _format_filepath(filepath):
+    filepath = filepath.replace(" ", "_")
+    filepath = filepath.replace("+00:00.json", ".json")
+    return filepath
+
+
+def rule_is_fulfilled(rule, transaction):
+    transaction_json = TransactionSerializer(transaction).data
+    rule_json = json.loads(rule.rule)
+    res = jsonLogic(rule_json, {"transaction": transaction_json})
+    return res is True  # NOTE: Needed to return False if rule is invalid
+
+
+def datetime_to_integer(dt_time):
+    return 10 ** 10 * dt_time.year + \
+           10 ** 8 * dt_time.month + \
+           10 ** 6 * dt_time.day + \
+           10 ** 4 * dt_time.hour + \
+           10 ** 2 * dt_time.minute + \
+           10 ** 0 * dt_time.second
