@@ -20,8 +20,10 @@ def handle_transactions_upload(request):
     entry_file = _add_entry_to_uploaded_files_table(
         request.user, account, uploaded_at)
     utils.save_uploaded_file(filepath, request.FILES['file'])
-    _save_transactions_from_file_to_db(
+    transactions_added = _save_transactions_from_file_to_db(
         filepath, account, request.user, entry_file)
+    _change_account_value_based_on_transactions(
+        transactions_added, account, request.user)
     _apply_rules_to_uncategorized_transactions(request)
 
 
@@ -52,15 +54,18 @@ def _save_transactions_from_file_to_db(filepath, account, user, file):
     base_repr = {"user_id": user.id, "account_id": account.id}
     defaults = {"data_file_id": file.id}
     transaction_data = parsers.parse_transaction_file(filepath, base_repr=base_repr)
+    transactions_added = []
     for datum in transaction_data:
         datum.update(defaults)
         try:
             Transaction.objects.create(**datum)
+            transactions_added.append(datum)
         except IntegrityError:
             print("IntegrityError detected")
             print(datum)
             print("ignore that...")
             pass
+    return datum
 
 
 def _add_entry_to_uploaded_files_table(user, account, uploaded_at):
@@ -68,3 +73,19 @@ def _add_entry_to_uploaded_files_table(user, account, uploaded_at):
                                         account_id=account.id,
                                         uploaded_at=uploaded_at)
     return entry
+
+
+def _change_account_value_based_on_transactions(transactions,
+                                                account,
+                                                user):
+    print("Updating Account Value")
+    # find all account values AT MOMENT OR AFTER the transaction was done (usually empty)
+    # find account value previous to moment transaction was done
+    # create new account value at the moment transaction was done
+    # apply change to all account values after the moment of the transaction that already existed
+
+    # What if two transactions at same time?
+    #   while account_value at same time already exists:
+    #       add one second to new account_value time
+    #   add account_value at shifted time
+    pass
