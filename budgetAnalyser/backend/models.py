@@ -90,6 +90,10 @@ class AccountValue(models.Model):
         indexes = [
             models.Index(fields=['account', '-valued_at',])
         ]
+        constraints = [
+            models.UniqueConstraint(fields=['account_id', 'valued_at'],
+            name='unique_account_value_per_moment_in_time')
+            ]
 
     def __str__(self):
         return "{}: {} {}".format(self.account.name, self.value, self.account.currency.code)
@@ -140,6 +144,9 @@ class CategoryGroup(models.Model):
 
     name = models.CharField(max_length=25, unique=True)
     type = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.name
 
 
 class Category(models.Model):
