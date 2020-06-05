@@ -8,6 +8,7 @@ from backend.models import AssetValue
 from backend.models import Bank
 from backend.models import Category
 from backend.models import Currency
+from backend.models import ExchangeRate
 from backend.models import Transaction
 
 
@@ -16,6 +17,13 @@ class CurrencySerializer(serializers.ModelSerializer):
     class Meta:
         model = Currency
         fields = ['id', 'code', 'name']
+
+
+class ExchangeRateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ExchangeRate
+        fields = ['id', 'origin', 'target', 'rate', 'valued_at']
 
 
 class BankSerializer(serializers.ModelSerializer):
@@ -62,24 +70,24 @@ class AssetSerializer(serializers.ModelSerializer):
 
 class AssetValueSerializer(serializers.ModelSerializer):
     asset = AssetSerializer()
-    percentage_paid = serializers.SerializerMethodField('calc_percentage_paid')
+    remaining_cost = serializers.SerializerMethodField('calc_remaining_cost')
 
-    def calc_percentage_paid(self, obj):
+    def calc_remaining_cost(self, obj):
         associated_credit = obj.asset.associated_credit
         if associated_credit:
             val = AccountValue.objects.filter(
-                    account__type__type='CREDIT',
-                    id=associated_credit.id
+                    account__id=associated_credit.id
                 ).order_by(
                     '-valued_at'
                 )[0]
-            return (obj.value - val.value) / obj.value
+            print("remaining credit value", val)
+            return val.value
         return 100.
 
 
     class Meta:
         model = AssetValue
-        fields = ['asset', 'valued_at', 'value', 'percentage_paid']
+        fields = ['asset', 'valued_at', 'value', 'remaining_cost']
 
 
 class TransactionSerializer(serializers.ModelSerializer):

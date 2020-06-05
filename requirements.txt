@@ -11,6 +11,7 @@ django-cors-headers
 
 # Formatting
 markdown
+regex
 
 # Logical
 json-logic-qubit

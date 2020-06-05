@@ -54,7 +54,8 @@ function AssetsRenderer(props) {
 
 function Asset(props) {
   const asset = props.asset;
-  const pct_paid = Number((100 * asset.percentage_paid).toFixed(1));
+  const remaining_cost = asset.remaining_cost;
+  const pct_paid = Number((100 * (asset.asset.cost - remaining_cost) / asset.asset.cost).toFixed(1));
   return (
     <Row>
     <Col>
@@ -66,7 +67,10 @@ function Asset(props) {
     <Col>
     {asset.asset.cost} {asset.asset.currency.code}
     </Col>
-    <Col md={6}>
+    <Col>
+    {asset.remaining_cost} {asset.asset.currency.code}
+    </Col>
+    <Col md={5}>
     <ProgressBar variant="success" now={pct_paid} label={`${pct_paid}%`}/>
     </Col>
     </Row>
@@ -85,7 +89,10 @@ function Header() {
     <Col>
     Cost
     </Col>
-    <Col md={6}>
+    <Col>
+    Payment Left
+    </Col>
+    <Col md={5}>
     Percentage Paid
     </Col>
     </Row>
