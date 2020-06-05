@@ -16,12 +16,11 @@ from api.views import average_expenses
 from api.views import average_income
 from api.views import transaction_detail
 from api.views import transaction_list
+from api.views import exchange_rate_add
 
 
 def get_api_urls():
-    API_URLS = []
-
-    API_URLS += [
+    return [
         path('api/', include('rest_framework.urls')),
         path('api/accounts', account_list),
         path('api/account_values', current_account_values),
@@ -37,6 +36,5 @@ def get_api_urls():
         path('api/income/average', average_income),
         path('api/income', monthly_income),
         path('api/networth', networth),
+        path('api/exchange_rate_add', exchange_rate_add),
     ]
-
-    return API_URLS

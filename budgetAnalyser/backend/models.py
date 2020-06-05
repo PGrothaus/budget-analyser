@@ -19,7 +19,7 @@ class Currency(models.Model):
             ]
 
     def __str__(self):
-        return self.name
+        return "{}: {}".format(self.pk, self.name)
 
 
 class ExchangeRate(models.Model):

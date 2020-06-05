@@ -33,6 +33,12 @@ transaction_detail = TransactionViewSet.as_view({'get': 'retrieve',
                                                  'put': 'update'})
 
 
+class ExchangeRateViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.ExchangeRateSerializer
+
+exchange_rate_add = ExchangeRateViewSet.as_view({'post': 'create'})
+
+
 class AccountViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.AccountSerializer
 
