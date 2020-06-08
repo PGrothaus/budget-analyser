@@ -1,5 +1,8 @@
 import json
 from datetime import datetime
+from datetime import date
+from datetime import timedelta
+from dateutil.relativedelta import relativedelta
 
 from rest_framework import serializers as core_serializers
 from django.db.models import Avg
@@ -78,10 +81,11 @@ class GroupedExpensesViewSet(viewsets.ModelViewSet):
         print(qp)
         return Transaction.objects.filter(
                 user=self.request.user,
-                category__group__type='expense',
+                type='expense',
+                account__type=2,
                 **qp
             ).exclude(
-                category_id=15
+                category__group__type='neutral'
             ).values(
                 'category__group__name'
             ).annotate(
@@ -102,10 +106,11 @@ class GroupedIncomeViewSet(viewsets.ModelViewSet):
         print(qp)
         return Transaction.objects.filter(
                 user=self.request.user,
-                category__group__type='income',
+                type='income',
+                account__type=2,
                 **qp
             ).exclude(
-                category_id=15
+                category__group__type='neutral'
             ).values(
                 'category__group__name'
             ).annotate(
@@ -123,14 +128,21 @@ class AverageExpensesViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         qp = {k: v for k, v in self.request.query_params.items()}
+        today = date.today()
+        firstThisMonth = today.replace(day=1)
+        firstLastMonth = firstThisMonth - timedelta(days=1)
+        firstInitMonth = firstThisMonth - relativedelta(months=+4)
         return [Transaction.objects.filter(
                 user=self.request.user,
                 type='expense',
+                account__type=2,
                 **qp
             ).exclude(
                 category__group__type='neutral'
             ).filter(
-                date__gte=datetime.strptime("2020-02-01", "%Y-%m-%d")
+                date__gte=firstInitMonth
+            ).filter(
+                date__lte=firstLastMonth
             ).annotate(
                 month=TruncMonth('date')
             ).values(
@@ -154,7 +166,7 @@ class AverageIncomeViewSet(viewsets.ModelViewSet):
         return [Transaction.objects.filter(
                 user=self.request.user,
                 type='income',
-                category__group__type='income',
+                account__type=2,
                 **qp
             ).exclude(
                 category__group__type='neutral'
@@ -183,7 +195,7 @@ class TotalMonthlyExpensesViewSet(viewsets.ModelViewSet):
         return [Transaction.objects.filter(
                 user=self.request.user,
                 type='expense',
-                category__group__type='expense',
+                account__type=2,
                 **qp
             ).exclude(
                 category__group__type='neutral'
@@ -203,9 +215,10 @@ class TotalMonthlyIncomeViewSet(viewsets.ModelViewSet):
         return [Transaction.objects.filter(
                 user=self.request.user,
                 type='income',
+                account__type=2,
                 **qp
             ).exclude(
-                category__group__type='neutral'
+                category__group__type='neutral',
             ).values(
                 'type'
             ).aggregate(
@@ -216,6 +229,27 @@ class TotalMonthlyIncomeViewSet(viewsets.ModelViewSet):
 monthly_income = TotalMonthlyIncomeViewSet.as_view({'get': 'list'})
 
 
+class CompleteMonthlyIncomeViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.AggregateSerializer
+
+    def get_queryset(self):
+        qp = {k: v for k, v in self.request.query_params.items()}
+        return [Transaction.objects.filter(
+                user=self.request.user,
+                type='income',
+                **qp
+            ).exclude(
+                category__group__type='neutral',
+            ).values(
+                'type'
+            ).aggregate(
+                total=Sum('amount')
+            )]
+
+
+complete_monthly_income = CompleteMonthlyIncomeViewSet.as_view({'get': 'list'})
+
+
 class TransactionFilteredView(generics.GenericAPIView,
                               mixins.ListModelMixin):
     serializer_class = serializers.TransactionSerializer
@@ -224,6 +258,7 @@ class TransactionFilteredView(generics.GenericAPIView,
         qp = {k: v for k, v in self.request.query_params.items()}
         return Transaction.objects.filter(
             user=self.request.user,
+            account__type=2,
             **qp
             ).exclude(
                 category__group__type='neutral'

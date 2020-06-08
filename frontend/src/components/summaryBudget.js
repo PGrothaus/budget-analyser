@@ -20,11 +20,13 @@ export default class MonthlySummary extends Component {
     super(props);
     this.state = {
       income: 0,
+      income_complete: 0,
       expenses: 0,
       date: new Date(),
       selections: {selectExpenses: true},
     };
     this.handleChangeIncome = this.handleChangeIncome.bind(this);
+    this.handleChangeIncomeComplete = this.handleChangeIncomeComplete.bind(this);
     this.handleChangeExpenses = this.handleChangeExpenses.bind(this);
     this.handleChangeDate = this.handleChangeDate.bind(this);
     this.handleChangeSelections = this.handleChangeSelections.bind(this);
@@ -40,6 +42,7 @@ export default class MonthlySummary extends Component {
   };
 
   handleChangeIncome(newVal) {this.setState({income: newVal.content});}
+  handleChangeIncomeComplete(newVal) {this.setState({income_complete: newVal.content});}
   handleChangeExpenses(newVal) {this.setState({expenses: newVal.content});}
   handleChangeDate(newVal) {this.setState({date: newVal});}
   totalValueSelector(val) {return val.data[0].total;}
@@ -52,6 +55,7 @@ export default class MonthlySummary extends Component {
     const month = date.getMonth() + 1;
     fetch(UserService.getIncome, month, this.handleChangeIncome, this.totalValueSelector);
     fetch(UserService.getExpenses, month, this.handleChangeExpenses, this.totalValueSelector);
+    fetch(UserService.getIncomeComplete, month, this.handleChangeIncomeComplete, this.totalValueSelector);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -72,11 +76,17 @@ export default class MonthlySummary extends Component {
   const date = this.state.date;
   const month = date.getMonth() + 1;
   const income = this.state.income;
+  const income_complete = this.state.income_complete;
   const expenses = this.state.expenses;
   const savings = Math.max(0, income - expenses);
   const expenses_selected = this.state.selections.selectExpenses;
   const selections = this.state.selections;
-  const savingsRate = 100 * savings / income;
+  var savingsRate = 0.;
+  var savingsRateComplete = 0.;
+  if (income > 0) {
+    savingsRate = 100 * savings / income;
+    savingsRateComplete = 100 * (savings - income + income_complete) / income_complete;
+  }
 
   const title = "Grouped Expenses";
   var options = { year: 'numeric', month: 'long'};
@@ -104,7 +114,7 @@ export default class MonthlySummary extends Component {
     <Col>
     <SummarisingValueRenderer
       title={"Total Income"}
-      total={formatCLP(income)} />
+      total={formatCLP(income) + " (" + formatCLP(income_complete).substring(4) + ")"} />
     </Col>
     <Col>
     <SummarisingValueRenderer
@@ -114,7 +124,7 @@ export default class MonthlySummary extends Component {
     <Col>
     <SummarisingValueRenderer
       title={"Savings Rate"}
-      total={formatPct(savingsRate)} />
+      total={formatPct(savingsRate) + " (" + formatPct(savingsRateComplete) + ")"} />
     </Col>
     </Row>
 

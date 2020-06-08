@@ -48,3 +48,10 @@ urlpatterns += [
          login_required(backend_views.TransactionsUploadView.as_view()),
          name='upload_transactions')
 ]
+
+# Add Investment related urls
+urlpatterns += [
+    path('investments/input',
+    login_required(backend_views.InvestmentInputView.as_view()),
+    name='investment_input')
+]

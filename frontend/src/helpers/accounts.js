@@ -10,3 +10,17 @@ export function is_liquid_account(elem) {
 export function sum_account_values(elems) {
   return elems.reduce(function(cnt, o){ return cnt + o.value; }, 0)
 }
+
+
+export function sum_account_investments(elems) {
+  return elems.reduce(function(cnt, o){ return cnt + amount_invested(o); }, 0)
+}
+
+
+function amount_invested(elem) {
+  console.log("amount invested", elem);
+  if (elem.invested_money === null) {
+    return elem.value
+  }
+  return elem.invested_money
+}

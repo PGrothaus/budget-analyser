@@ -20,6 +20,7 @@ from .models import UploadedFile
 from .models import Bank
 from .models import Account
 from .models import Category
+from .forms import InvestmentForm
 from .forms import UploadTransactionsForm
 
 
@@ -99,4 +100,20 @@ class TransactionsUploadView(View):
         if form.is_valid():
             handlers.handle_transactions_upload(request)
             return HttpResponseRedirect('/transactions/upload')
+        return render(request, self.template_name, {'form': form})
+
+
+class InvestmentInputView(View):
+    form_class = InvestmentForm
+    template_name = 'investments/input.html'
+
+    def get(self, request, *args, **kwarg):
+        form = self.form_class(request.user)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.user, request.POST, request.FILES)
+        if form.is_valid():
+            handlers.handle_investment_input(request)
+            return HttpResponseRedirect('/investments/input')
         return render(request, self.template_name, {'form': form})

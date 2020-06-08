@@ -1,3 +1,4 @@
+from django.db.models import Sum
 from rest_framework import serializers
 
 from backend.models import Account
@@ -53,10 +54,32 @@ class AccountSerializer(serializers.ModelSerializer):
 
 class AccountValueSerializer(serializers.ModelSerializer):
     account = AccountSerializer()
+    invested_money = serializers.SerializerMethodField('calc_invested_money')
+
+    def calc_invested_money(self, obj):
+        if obj.account.type.id == 2:
+            return None
+        val_in = Transaction.objects.filter(
+            account_id=obj.account.id,
+        ).exclude(
+            type='expense'
+        ).aggregate(
+            total=Sum('amount')
+        )["total"]
+        val_out = Transaction.objects.filter(
+            account_id=obj.account.id,
+            type='expense'
+        ).aggregate(
+            total=Sum('amount')
+        )["total"]
+        if val_in is None:
+            return None
+        val_out = 0 if val_out is None else val_out
+        return val_in - val_out
 
     class Meta:
         model = AccountValue
-        fields = ['account', 'valued_at', 'value']
+        fields = ['account', 'valued_at', 'value', 'invested_money']
 
 
 class AssetSerializer(serializers.ModelSerializer):

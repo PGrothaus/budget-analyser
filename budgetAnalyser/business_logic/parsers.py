@@ -6,6 +6,7 @@ from datetime import datetime
 
 from business_logic import helpers
 
+
 timezone = pytz.timezone("Chile/Continental")
 
 def parse_banco_edwards_ccte(jdata):
@@ -30,7 +31,8 @@ def parse_transaction_banco_edwards_ccte(datum, base_repr):
     base_repr["currency"] = "CLP"
     base_repr["type"] = _format_transaction_type(datum["tipo"])
     base_repr["date"] = _format_transaction_date(datum["fecha"])
-    base_repr["transaction_id"] = _build_transaction_id(base_repr)
+    base_repr["transaction_id"] = helpers.build_transaction_id(base_repr)
+    base_repr["new_account_value"] = datum["saldoMovimiento"]
     return base_repr
 
 
@@ -42,7 +44,7 @@ def parse_transaction_banco_edwards_tc_national(datum, base_repr):
     base_repr["currency"] = "CLP"
     base_repr["type"] = _format_transaction_type(datum["grupo"])
     base_repr["date"] = _format_transaction_date(datum["fechaTransaccionString"], fix_time_of_day=True)
-    base_repr["transaction_id"] = _build_transaction_id(base_repr)
+    base_repr["transaction_id"] = helpers.build_transaction_id(base_repr)
     return base_repr
 
 
@@ -54,18 +56,20 @@ def parse_transaction_banco_edwards_tc_national_no_facturado(datum, base_repr):
     base_repr["currency"] = "CLP"
     base_repr["type"] = "expense"
     base_repr["date"] = _format_transaction_date(" ".join([datum["fechaTransaccionString"], datum["horaAutorizacion"]]), fix_time_of_day=True)
-    base_repr["transaction_id"] = _build_transaction_id(base_repr)
+    base_repr["transaction_id"] = helpers.build_transaction_id(base_repr)
     return base_repr
 
 
 def parse_transaction_bbva_ccte(datum, base_repr):
     base_repr["description"] = _format_description(datum["glosa"])
-    base_repr["amount"] = _format_amount(datum["montomovfmt"])
+    base_repr["amount"] = _format_amount(datum["montomov"])
     base_repr["currency"] = "CLP"
     base_repr["type"] = _format_transaction_type(datum["tipomov"])
     base_repr["date"] = _format_transaction_date(datum["fecmovfmt"])
-    base_repr["transaction_id"] = _build_transaction_id(base_repr, datum["numdoc"])
+    base_repr["transaction_id"] = helpers.build_transaction_id(base_repr, datum["numdoc"])
+    base_repr["new_account_value"] = _format_amount(datum["saldolin"])
     return base_repr
+
 
 AVAILABLE_FILE_PARSERS = {
     "banco_edwards_ccte": parse_banco_edwards_ccte,
@@ -136,18 +140,8 @@ def _format_transaction_date(dateinfo, fix_time_of_day=False):
 
 
 def _format_amount(amount):
-    amount = amount.replace(".", "")
+    amount = amount[:-2]
     return int(amount)
-
-
-def _build_transaction_id(datum, *args):
-    key = helpers.datetime_to_integer(datum["date"])
-    key += _hash_text(datum["description"])
-    key += _hash_text(str(datum["amount"]))
-    for arg in args:
-        key += _hash_text(str(arg))
-    idx = "{}{}{}".format(datum["user_id"], datum["account_id"], key)
-    return int(idx)
 
 
 def _format_transaction_type(type):
@@ -175,7 +169,3 @@ def _format_description(description):
 
 def _extract_transactions(data, file_key):
     return AVAILABLE_FILE_PARSERS[file_key](data)
-
-
-def _hash_text(text):
-    return int(hashlib.sha256(text.encode('utf-8')).hexdigest(), 16) % 10**8

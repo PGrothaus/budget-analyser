@@ -6,10 +6,9 @@ from backend.models import Transaction
 from rule_system.models import CategorizationRule
 
 
-def account_from_request(request, bank):
+def account_from_request(request):
     return get_object_or_404(Account,
                              user_id=request.user.id,
-                             bank_id=bank.id,
                              pk=request.POST['account'],
                              )
 

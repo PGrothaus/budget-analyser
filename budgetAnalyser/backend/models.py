@@ -1,8 +1,10 @@
 from datetime import datetime
 
 from django.db import models
+from django.contrib.auth.models import UserManager
 
 from custom_auth.models import MyUser
+from custom_auth.models import MyUserManager
 
 
 class Currency(models.Model):
@@ -28,6 +30,8 @@ class ExchangeRate(models.Model):
     target = models.ForeignKey(Currency, on_delete=models.CASCADE, related_name='%(class)s_target')
     rate = models.FloatField()
     valued_at = models.DateTimeField()
+
+    # objects = UserManager()
 
     class Meta:
         indexes = [
