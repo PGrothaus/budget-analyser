@@ -37,6 +37,12 @@ class UserService {
     return axios.get(API_URL + 'income?date__month=' + month, { headers: authHeader() });
   }
 
+  getIncomeComplete(props) {
+    console.log("getIncomeComplete", props);
+    const month = props.toString();
+    return axios.get(API_URL + 'income/complete?date__month=' + month, { headers: authHeader() });
+  }
+
   getOutgoingTransactions(props) {
     console.log("getOutgoingTransactions", props);
     const month = props.toString();
@@ -52,13 +58,13 @@ class UserService {
   getGroupedExpenses(props) {
     console.log("getGroupedExpenses", props);
     const month = props.toString();
-    return axios.get(API_URL + 'expenses/grouped?type=expense&date__month=' + month, { headers: authHeader() });
+    return axios.get(API_URL + 'expenses/grouped?date__month=' + month, { headers: authHeader() });
   }
 
   getGroupedIncome(props) {
     console.log("getGroupedIncome", props);
     const month = props.toString();
-    return axios.get(API_URL + 'income/grouped?type=income&date__month=' + month, { headers: authHeader() });
+    return axios.get(API_URL + 'income/grouped?date__month=' + month, { headers: authHeader() });
   }
 
   putTransaction(props) {

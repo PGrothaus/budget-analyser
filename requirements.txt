@@ -9,6 +9,9 @@ django-filter
 djangorestframework-simplejwt
 django-cors-headers
 
+# Utils
+python-dateutil
+
 # Formatting
 markdown
 regex

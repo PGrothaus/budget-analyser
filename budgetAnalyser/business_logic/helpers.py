@@ -1,3 +1,4 @@
+import hashlib
 import json
 import os
 
@@ -23,6 +24,20 @@ def rule_is_fulfilled(rule, transaction):
     rule_json = json.loads(rule.rule)
     res = jsonLogic(rule_json, {"transaction": transaction_json})
     return res is True  # NOTE: Needed to return False if rule is invalid
+
+
+def build_transaction_id(datum, *args):
+    key = datetime_to_integer(datum["date"])
+    key += _hash_text(datum["description"])
+    key += _hash_text(str(datum["amount"]))
+    for arg in args:
+        key += _hash_text(str(arg))
+    idx = "{}{}{}".format(datum["user_id"], datum["account_id"], key)
+    return int(idx)
+
+
+def _hash_text(text):
+    return int(hashlib.sha256(text.encode('utf-8')).hexdigest(), 16) % 10**8
 
 
 def datetime_to_integer(dt_time):

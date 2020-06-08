@@ -12,6 +12,7 @@ import {AccountValueList} from './accounts';
 import {formatCLP} from '../helpers/formats';
 import {is_retirement_account} from '../helpers/accounts';
 import {sum_account_values} from '../helpers/accounts';
+import {sum_account_investments} from '../helpers/accounts';
 
 
 export default class SummaryAFP extends Component {
@@ -46,13 +47,23 @@ export default class SummaryAFP extends Component {
         return ""
     }
     const elems_retirement = elems.filter(elem => is_retirement_account(elem))
-    const total_retirement = formatCLP(sum_account_values(elems_retirement));
+    const total_retirement = sum_account_values(elems_retirement);
+    const total_investments = sum_account_investments(elems_retirement);
+    const total_gains = total_retirement - total_investments;
     return (<div>
             <Container>
               <Row>
+              <Col>
+                <SummarisingValueRenderer title="Total Money Invested"
+                                          total={formatCLP(total_investments)} />
+                </Col>
                 <Col>
                   <SummarisingValueRenderer title="Total Retirement"
-                                            total={total_retirement} />
+                                            total={formatCLP(total_retirement)} />
+                </Col>
+                <Col>
+                  <SummarisingValueRenderer title="Total Gains"
+                                            total={formatCLP(total_gains)} />
                 </Col>
               </Row>
               <AccountValueList collect={UserService.getCurrentAccountValues}

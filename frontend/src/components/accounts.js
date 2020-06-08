@@ -12,7 +12,14 @@ import {is_retirement_account} from '../helpers/accounts';
 
 
 function fmt_value(elem) {
-  elem.value = formatCLP(elem.value)
+  elem.gains = "n.a.";
+  if (elem.invested_money > 0) {
+    elem.gains = elem.value - elem.invested_money;
+    elem.gains = formatCLP(elem.gains);
+    elem.invested_money = formatCLP(elem.invested_money);}
+  if (elem.gains === "n.a.") {elem.invested_money = "n.a."}
+  elem.value = formatCLP(elem.value);
+
   return elem
 }
 
@@ -57,7 +64,9 @@ export class AccountValueList extends Component {
   prepare_columns() {
     return [{title: 'Bank', field: 'account.bank.name'},
             {title: 'Account', field: 'account.name'},
-            {title: 'Amount', field: 'value'},
+            {title: 'Money Invested', field: 'invested_money'},
+            {title: 'Value Investment', field: 'value'},
+            {title: 'Gains/Losses', field:'gains'},
             ]
   }
 

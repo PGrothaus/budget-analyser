@@ -12,6 +12,7 @@ import {AccountValueList} from './accounts';
 import {formatCLP} from '../helpers/formats';
 import {is_liquid_account} from '../helpers/accounts';
 import {sum_account_values} from '../helpers/accounts';
+import {sum_account_investments} from '../helpers/accounts';
 
 
 export default class SummarySavings extends Component {
@@ -46,13 +47,19 @@ export default class SummarySavings extends Component {
         return ""
     }
     const elems_liquid = elems.filter(elem => is_liquid_account(elem))
-    const total_liquid = formatCLP(sum_account_values(elems_liquid));
+    const total_liquid = sum_account_values(elems_liquid);
+    const total_investments = sum_account_investments(elems_liquid);
+    const total_gains = total_liquid - total_investments;
     return (<div>
             <Container>
               <Row>
                 <Col>
                   <SummarisingValueRenderer title="Total Savings"
-                                            total={total_liquid} />
+                                            total={formatCLP(total_liquid)} />
+                </Col>
+                <Col>
+                  <SummarisingValueRenderer title="Gains Included"
+                                            total={formatCLP(total_gains)} />
                 </Col>
               </Row>
               <AccountValueList collect={UserService.getCurrentAccountValues}
