@@ -8,6 +8,7 @@ django-prettyjson
 django-filter
 djangorestframework-simplejwt
 django-cors-headers
+django-background-tasks
 
 # Utils
 python-dateutil

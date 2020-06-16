@@ -10,7 +10,9 @@ from backend.models import Bank
 from backend.models import Category
 from backend.models import Currency
 from backend.models import ExchangeRate
+from backend.models import NetWorth
 from backend.models import Transaction
+from business_logic import helpers
 
 
 class CurrencySerializer(serializers.ModelSerializer):
@@ -74,8 +76,11 @@ class AccountValueSerializer(serializers.ModelSerializer):
         )["total"]
         if val_in is None:
             return None
+        tmp = Transaction.objects.filter(
+            account_id=obj.account.id)[0]
         val_out = 0 if val_out is None else val_out
-        return val_in - val_out
+        delta = val_in - val_out
+        return helpers.exchange(delta, tmp.currency, "CLP")
 
     class Meta:
         model = AccountValue
@@ -140,10 +145,19 @@ class GroupedExpensesSerializer(serializers.BaseSerializer):
         }
 
 
+class NetworthSerializer(serializers.ModelSerializer):
+    valued_at = serializers.DateTimeField(format="%Y-%m-%d", required=True)
+
+    class Meta:
+        model = NetWorth
+        fields = ['id',
+                  'valued_at',
+                  'value']
+
+
 class AggregateSerializer(serializers.BaseSerializer):
 
     def to_representation(self, data):
-        print(data)
         return {
             'total': data["total"]
         }

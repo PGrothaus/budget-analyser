@@ -1,6 +1,8 @@
 /* eslint-disable no-undef */
 import React from 'react';
 import { makePie } from '../helpers/pie';
+import { makeBar } from '../helpers/bar';
+import { makeArea } from '../helpers/area';
 /* Component */
 const Chart = (props) => {
     const { width, height } = props;
@@ -23,6 +25,16 @@ const Chart = (props) => {
                     makePie(svg, data);
                     break;
                   }
+
+                  case 'bar': {
+                    makeBar(svg, data);
+                    break;
+                  }
+
+                  case 'area': {
+                    makeArea(svg, data);
+                    break;
+                  }
               }
 
               // path.exit().remove();
@@ -41,7 +53,7 @@ const Chart = (props) => {
     return (
       <div>
       <svg
-//          style={{border: "2px solid gold"}}
+          // style={{border: "2px solid gold"}}
           className="d3-component"
           ref={d3Container}
           width={width}

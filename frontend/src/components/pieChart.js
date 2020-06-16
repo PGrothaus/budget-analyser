@@ -45,7 +45,7 @@ export class PieChart extends Component {
 
     return (
             <Chart
-              type="pie"
+              type="bar"
               month={this.props.month}
               data={this.state.content}
             />

@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'rule_system.apps.RuleSystemConfig',
     'business_logic.apps.BusinessLogicConfig',
     'rest_framework',
+    'background_task',
 ]
 
 MIDDLEWARE = [
