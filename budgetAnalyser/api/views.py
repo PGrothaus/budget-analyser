@@ -23,7 +23,8 @@ from backend.models import Bank
 from backend.models import Currency
 from backend.models import ExchangeRate
 from backend.models import Transaction
-from business_logic import helpers
+from backend.models import NetWorth
+from business_logic import metrics
 
 
 class TransactionViewSet(viewsets.ModelViewSet):
@@ -313,96 +314,36 @@ current_account_values = CurrentAccountValuesView.as_view()
 
 
 class NetWorthView(generics.GenericAPIView,
-                               mixins.ListModelMixin):
+                   mixins.ListModelMixin):
     serializer_class = serializers.AggregateSerializer
 
     def get_queryset(self):
-        acc_vals = self.get_account_values()
-        asset_vals = self.get_asset_values()
-        credit_vals = self.get_credit_vals()
-        nw = self.account_values_to_target_currency(acc_vals)
-        nw += self.asset_values_to_target_currency(asset_vals)
-        nw -= self.account_values_to_target_currency(credit_vals)
+        nw = NetWorth.objects.filter(
+            user=self.request.user,
+            type="networth"
+            ).order_by('-valued_at')[0].value
         return [{"total": nw}]
-
-    def get_account_values(self):
-        return AccountValue.objects.filter(
-            user=self.request.user
-            ).exclude(
-                account__type__type='CREDIT'
-            ).order_by(
-                'account__name', 'account__bank__id', '-valued_at'
-            ).distinct(
-                'account__name', 'account__bank__id'
-            )
-
-    def get_credit_vals(self):
-        return AccountValue.objects.filter(
-            user=self.request.user
-            ).filter(
-                account__type__type='CREDIT'
-            ).order_by(
-                'account__name', 'account__bank__id', '-valued_at'
-            ).distinct(
-                'account__name', 'account__bank__id'
-            )
-
-    def get_asset_values(self):
-        return AssetValue.objects.filter(
-            user=self.request.user
-            ).order_by(
-                'asset__name', '-valued_at'
-            ).distinct(
-                'asset__name',
-            )
-
-    def account_values_to_target_currency(self,
-                                          acc_vals,
-                                          target_currency_code="CLP"):
-        rates = ExchangeRate.objects.filter(
-            target__code=target_currency_code
-        ).order_by(
-            'origin__code', 'target__code', '-valued_at'
-        ).distinct(
-            'origin__code', 'target__code'
-        )
-        target_cur = Currency.objects.get(code=target_currency_code)
-        nw = 0
-        for acc_val in acc_vals:
-            cur_currency_code = acc_val.account.currency.code
-            if not cur_currency_code == target_currency_code:
-                rate = [elem.rate for elem in rates if elem.origin.code == cur_currency_code][0]
-                acc_val.account.currency = target_cur
-                acc_val.value = rate * acc_val.value
-            nw += acc_val.value
-        return nw
-
-    def asset_values_to_target_currency(self,
-                                        acc_vals,
-                                        target_currency_code="CLP"):
-        rates = ExchangeRate.objects.filter(
-            target__code=target_currency_code
-        ).order_by(
-            'origin__code', 'target__code', '-valued_at'
-        ).distinct(
-            'origin__code', 'target__code'
-        )
-        target_cur = Currency.objects.get(code=target_currency_code)
-        nw = 0
-        for acc_val in acc_vals:
-            cur_currency_code = acc_val.asset.currency.code
-            if not cur_currency_code == target_currency_code:
-                rate = [elem.rate for elem in rates if elem.origin.code == cur_currency_code][0]
-                acc_val.asset.currency = target_cur
-                acc_val.value = rate * acc_val.value
-            nw += acc_val.value
-        return nw
-
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
 networth = NetWorthView.as_view()
+
+
+class NetWorthHistoryView(generics.GenericAPIView,
+                          mixins.ListModelMixin):
+    serializer_class = serializers.NetworthSerializer
+
+    def get_queryset(self):
+        return NetWorth.objects.filter(
+            user=self.request.user,
+            type="networth"
+            ).order_by('valued_at')
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+networth_history = NetWorthHistoryView.as_view()
 
 
 class CurrentAssetValuesView(generics.GenericAPIView,

@@ -10,6 +10,7 @@ import Row from 'react-bootstrap/Row';
 import {formatCLP} from "../helpers/formats";
 import {formatPct} from "../helpers/formats";
 import {SummarisingValueRenderer} from "./expenses";
+import {Chart} from "./charts";
 
 export default class Profile extends Component {
   constructor(props) {
@@ -20,10 +21,12 @@ export default class Profile extends Component {
       expenses: 0,
       income: 0,
       netWorth: 0,
+      netWorthHistory: [],
     };
     this.handleChangeExpenses = this.handleChangeExpenses.bind(this);
     this.handleChangeIncome = this.handleChangeIncome.bind(this);
     this.handleChangeNetWorth = this.handleChangeNetWorth.bind(this);
+    this.handleChangeNetWorthHistory = this.handleChangeNetWorthHistory.bind(this);
     this.selector = this.selector.bind(this);
   }
 
@@ -39,6 +42,10 @@ export default class Profile extends Component {
     fetch(UserService.getNetWorth,
           0,
           this.handleChangeNetWorth,
+          this.selector);
+    fetch(UserService.getNetWorthHistory,
+          0,
+          this.handleChangeNetWorthHistory,
           this.selector);
   }
 
@@ -57,12 +64,18 @@ export default class Profile extends Component {
     this.setState({netWorth: e.content[0].total});
   }
 
+  handleChangeNetWorthHistory(e) {
+    console.log("ChangeNetWorthHistroy", e);
+    this.setState({netWorthHistory: e.content});
+  }
+
   selector(response) {
     return response.data
   }
 
   render() {
     console.log(this.state);
+    const nwHistory = this.state.netWorthHistory;
     return (
       <div>
       <Container>
@@ -97,6 +110,7 @@ export default class Profile extends Component {
       <Col>
       </Col>
       </Row>
+      <ShowNetWorthHistoryChart data={nwHistory} />
       </Container>
       </div>
     );
@@ -107,6 +121,15 @@ export default class Profile extends Component {
 const ShowMonth = ({elem}) => (
   <p>{elem.month.toString() + ": " + elem.total.toString()}</p>
 );
+
+
+function ShowNetWorthHistoryChart(props) {
+  return (<Chart
+    type="area"
+    month={0}
+    data={props.data}
+    />);
+  }
 
 
 const ProfileRenderer = ({user}) => (

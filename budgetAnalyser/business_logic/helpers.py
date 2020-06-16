@@ -5,6 +5,21 @@ import os
 from json_logic import jsonLogic
 
 from api.serializers import TransactionSerializer
+from backend import models
+
+
+def exchange(amount, origin, target):
+    if origin == target:
+        return amount
+    rates = models.ExchangeRate.objects.filter(
+        target__code=target
+    ).order_by(
+        'origin__code', 'target__code', '-valued_at'
+    ).distinct(
+        'origin__code', 'target__code'
+    )
+    rate = [elem.rate for elem in rates if elem.origin.code == origin][0]
+    return amount * rate
 
 
 def filepath_to_store_uploaded_transaction(user, bank, account, uploaded_at):

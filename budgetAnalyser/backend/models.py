@@ -94,10 +94,10 @@ class AccountValue(models.Model):
         indexes = [
             models.Index(fields=['account', '-valued_at',])
         ]
-        constraints = [
-            models.UniqueConstraint(fields=['account_id', 'valued_at'],
-            name='unique_account_value_per_moment_in_time')
-            ]
+#        constraints = [
+#            models.UniqueConstraint(fields=['account_id', 'valued_at'],
+#            name='unique_account_value_per_moment_in_time')
+#            ]
 
     def __str__(self):
         return "{}: {} {}".format(self.account.name, self.value, self.account.currency.code)
@@ -189,3 +189,23 @@ class Transaction(models.Model):
             self.transaction_id, self.description, self.amount, self.type,
             self.account, self.date, self.category
         )
+
+
+class NetWorth(models.Model):
+
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    valued_at = models.DateTimeField()
+    value = models.FloatField()
+    type = models.CharField(max_length=20, default="networth")
+
+    class Meta:
+        constraints = [
+        models.UniqueConstraint(fields=['user_id', 'valued_at'],
+        name='unique_networth_per_moment_in_time')
+        ]
+        indexes = [
+            models.Index(fields=['user_id', 'type', '-valued_at',])
+        ]
+
+    def __str__(self):
+        return "{}: {}".format(self.type.capitalize(), self.value)

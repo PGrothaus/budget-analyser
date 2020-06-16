@@ -2,9 +2,12 @@ import requests
 import re
 import time
 from datetime import datetime
+from backend import models
 
 
-def main():
+
+def collect_all():
+    print("Collecting all")
     collect_value_uf()
     collect_values_planvital()
     collect_value_currencies()
@@ -52,10 +55,16 @@ def post_to_db(value, origin):
                "target": 1,
                "rate": value,
                "valued_at": datetime.now()}
-    r = requests.post("http://127.0.0.1:8000/api/exchange_rate_add", data=payload)
-    if r.status_code != 201:
-        print(r.status_code)
-        print(r.text)
+    models.ExchangeRate.objects.create(
+        origin_id=origin,
+        target_id=1,
+        rate=value,
+        valued_at=datetime.now()
+    )
+#    r = requests.post("http://127.0.0.1:8000/api/exchange_rate_add", data=payload)
+#    if r.status_code != 201:
+#        print(r.status_code)
+#        print(r.text)
     print("Saved Rate to DB: {}-{}: {}".format(origin, "CLP", value))
 
 
@@ -105,4 +114,4 @@ def extract_value_currency_from_match(match):
 
 
 if "__main__" == __name__:
-    main()
+    collect_all()

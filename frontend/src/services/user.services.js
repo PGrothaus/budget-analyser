@@ -10,6 +10,11 @@ class UserService {
     return axios.get(API_URL + 'networth', { headers: authHeader() });
   }
 
+  getNetWorthHistory(props) {
+    console.log("NetWorth", props);
+    return axios.get(API_URL + 'networth/history', { headers: authHeader() });
+  }
+
   getAverageExpenses(props) {
     console.log("MonthwiseExpenses", props);
     return axios.get(API_URL + 'expenses/average', { headers: authHeader() });
@@ -77,9 +82,9 @@ class UserService {
       .catch(e => console.log(e));
     }
 
-    getCurrentAccountValues(props) {
-      return axios.get(API_URL + 'account_values', { headers: authHeader() });
-    }
+  getCurrentAccountValues(props) {
+    return axios.get(API_URL + 'account_values', { headers: authHeader() });
+  }
 }
 
 

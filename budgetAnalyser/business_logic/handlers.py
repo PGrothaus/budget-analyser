@@ -17,7 +17,7 @@ from backend.models import UploadedFile
 
 def handle_transactions_upload(request):
     bank = queries.bank_from_request(request)
-    account = queries.account_from_request(request, bank)
+    account = queries.account_from_request(request)
     uploaded_at = pytz.utc.localize(datetime.now())
     filepath = helpers.filepath_to_store_uploaded_transaction(
         request.user, bank, account, uploaded_at)
