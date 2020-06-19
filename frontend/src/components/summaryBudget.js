@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import DatePicker from 'react-datepicker';
 import {SummarisingValueRenderer} from './expenses';
-import {TransactionList} from './transactions';
+import {TransactionTable} from "./tables";
 import UserService from "../services/user.services";
 import {fetch} from "../services/user.services";
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import {PieChart} from './pieChart';
+import {BarChart} from './charts';
 import TransactionTypeSwitch from './switches';
 import {formatCLP} from '../helpers/formats';
 import {formatPct} from '../helpers/formats';
@@ -22,6 +22,10 @@ export default class MonthlySummary extends Component {
       income: 0,
       income_complete: 0,
       expenses: 0,
+      groupedExpenses: [],
+      groupedIncome: [],
+      incomingTransactions: [],
+      outgoingTransactions: [],
       date: new Date(),
       selections: {selectExpenses: true},
     };
@@ -30,6 +34,10 @@ export default class MonthlySummary extends Component {
     this.handleChangeExpenses = this.handleChangeExpenses.bind(this);
     this.handleChangeDate = this.handleChangeDate.bind(this);
     this.handleChangeSelections = this.handleChangeSelections.bind(this);
+    this.handleChangeOutgoingTransactions = this.handleChangeOutgoingTransactions.bind(this);
+    this.handleChangeIncomingTransactions = this.handleChangeIncomingTransactions.bind(this);
+    this.handleChangeGroupedIncome = this.handleChangeGroupedIncome.bind(this);
+    this.handleChangeGroupedExpenses = this.handleChangeGroupedExpenses.bind(this);
     this.totalValueSelector = this.totalValueSelector.bind(this);
     this.fetchAll = this.fetchAll.bind(this);
   }
@@ -45,7 +53,12 @@ export default class MonthlySummary extends Component {
   handleChangeIncomeComplete(newVal) {this.setState({income_complete: newVal.content});}
   handleChangeExpenses(newVal) {this.setState({expenses: newVal.content});}
   handleChangeDate(newVal) {this.setState({date: newVal});}
+  handleChangeOutgoingTransactions(newVal) {this.setState({outgoingTransactions: newVal.content});}
+  handleChangeIncomingTransactions(newVal) {this.setState({incomingTransactions: newVal.content});}
+  handleChangeGroupedExpenses(newVal) {this.setState({groupedExpenses: newVal.content});}
+  handleChangeGroupedIncome(newVal) {this.setState({groupedIncome: newVal.content});}
   totalValueSelector(val) {return val.data[0].total;}
+  valueSelector(val) {return val.data;}
 
   componentDidMount() {this.fetchAll();}
 
@@ -56,6 +69,10 @@ export default class MonthlySummary extends Component {
     fetch(UserService.getIncome, month, this.handleChangeIncome, this.totalValueSelector);
     fetch(UserService.getExpenses, month, this.handleChangeExpenses, this.totalValueSelector);
     fetch(UserService.getIncomeComplete, month, this.handleChangeIncomeComplete, this.totalValueSelector);
+    fetch(UserService.getOutgoingTransactions, month, this.handleChangeOutgoingTransactions, this.valueSelector);
+    fetch(UserService.getIncomingTransactions, month, this.handleChangeIncomingTransactions, this.valueSelector);
+    fetch(UserService.getGroupedIncome, month, this.handleChangeGroupedIncome, this.valueSelector);
+    fetch(UserService.getGroupedExpenses, month, this.handleChangeGroupedExpenses, this.valueSelector);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -81,6 +98,10 @@ export default class MonthlySummary extends Component {
   const savings = Math.max(0, income - expenses);
   const expenses_selected = this.state.selections.selectExpenses;
   const selections = this.state.selections;
+  const incomingTransactions = this.state.incomingTransactions;
+  const outgoingTransactions = this.state.outgoingTransactions;
+  const groupedIncome = this.state.groupedIncome;
+  const groupedExpenses = this.state.groupedExpenses;
   var savingsRate = 0.;
   var savingsRateComplete = 0.;
   if (income > 0) {
@@ -132,12 +153,14 @@ export default class MonthlySummary extends Component {
     <Col md={4}>
     <ShowChart
       expenses_selected={expenses_selected}
-      month={month} />
+      groupedIncome={groupedIncome}
+      groupedExpenses={groupedExpenses} />
     </Col>
     <Col>
-    <ShowList
+    <ShowTable
       expenses_selected={expenses_selected}
-      month={month} />
+      incomingTransactions={incomingTransactions}
+      outgoingTransactions={outgoingTransactions} />
     </Col>
 
     </Row>
@@ -145,39 +168,26 @@ export default class MonthlySummary extends Component {
   );}
 }
 
-function ShowList(props) {
-  console.log("Decide which list", props);
+function ShowTable(props) {
   if (props.expenses_selected === true) {
-    console.log("Render expenses");
-    return (<TransactionList
-      collect={UserService.getOutgoingTransactions}
-      name={"content"}
-      month={props.month}/>);
+    console.log("Render outgoing transacion table", props);
+    return (<TransactionTable
+      elems={props.outgoingTransactions} />);
   }
-  console.log("Render income");
-  return (<TransactionList
-    collect={UserService.getIncomingTransactions}
-    name={"content"}
-    month={props.month} />);
+  console.log("Render incoming transaction table", props);
+  return (<TransactionTable
+      elems={props.incomingTransactions} />);
 }
 
 
 function ShowChart(props) {
   console.log("Decide which chart", props);
   if (props.expenses_selected === true) {
-    console.log("Render expenses");
-    return (<PieChart
-      collect={UserService.getGroupedExpenses}
-      name={"content"}
-      month={props.month}
-      title={"Expenses"}/>);
+    console.log("Render pie chart grouped expenses", props);
+    return <BarChart elems={props.groupedExpenses} />;
   }
-  console.log("Render income");
-  return (<PieChart
-    month={props.month}
-    collect={UserService.getGroupedIncome}
-    name={"content"}
-    title={"Income"} />);
+  console.log("Render pie chart grouped income", props);
+  return <BarChart elems={props.groupedIncome} />;
 }
 
 

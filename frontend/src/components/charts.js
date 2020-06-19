@@ -48,7 +48,7 @@ const Chart = (props) => {
             if the variables are valid, but we do not have to compare old props
             to next props to decide whether to rerender.
         */
-        [props.data, props.month, props.type])
+        [props.data, props.type])
 
     return (
       <div>
@@ -61,6 +61,15 @@ const Chart = (props) => {
       </div>
     );
 };
+
+export function BarChart(props) {
+  return (
+    <Chart
+      type="bar"
+      data={props.elems}
+      />
+  )
+}
 
 export {
  Chart

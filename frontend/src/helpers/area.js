@@ -38,6 +38,11 @@ const makeArea = (svg, data) => {
       .y0(height)
       .y1(function(d) { return y(d.value); })
 
+  var upperArea = d3.area()
+      .x(function(d) { return x(d.valued_at); })
+      .y0(0)
+      .y1(function(d) { return y(d.value) - 1; })
+
 
   // define the line
   var valueline = d3.line()
@@ -69,11 +74,21 @@ const makeArea = (svg, data) => {
   svg.append("path")
       .data([data])
       .attr("class", "line")
-      .attr("stroke", "#69b3a2")
+      .attr("stroke", "#000000")
       .attr("stroke-width", 1.5)
       .attr("transform",
             "translate(" + (margin.left) + "," + (margin.top) + ")")
       .attr("d", valueline);
+
+
+  // add the area
+  svg.append("path")
+     .data([data])
+     .attr("fill", "#FFFFFF")
+     .attr("class", "upperArea")
+     .attr("transform",
+           "translate(" + (margin.left + 1) + "," + (margin.top) + ")")
+     .attr("d", upperArea);
 
   // add the area
   svg.append("path")
@@ -83,6 +98,8 @@ const makeArea = (svg, data) => {
      .attr("transform",
            "translate(" + (margin.left + 1) + "," + (margin.top) + ")")
      .attr("d", area);
+
+
 
   // Add the data points
   svg.selectAll("dot")
@@ -98,6 +115,10 @@ const makeArea = (svg, data) => {
            "translate(" + (margin.left) + "," + (margin.top) + ")")
      .append("svg:title")
        .text(function(d) { return formatCLP(d.value); })
+
+
+
+
 }
 
 export {
