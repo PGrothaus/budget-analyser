@@ -16,7 +16,8 @@ def calculate_networth_all_users():
         nw = metrics.networth(user)
         models.NetWorth.objects.create(user=user,
                                        value=nw,
-                                       valued_at=datetime.now())
+                                       valued_at=datetime.now(),
+                                       type="networth")
         print("NetWorth for user %s is %s" % (user_id, nw))
 
 

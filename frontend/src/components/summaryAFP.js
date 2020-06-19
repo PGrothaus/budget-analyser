@@ -7,8 +7,9 @@ import UserService from "../services/user.services";
 import {fetch} from "../services/user.services";
 
 import {SummarisingValueRenderer} from './expenses';
-import {AccountValueList} from './accounts';
+import {AccountTable} from './tables';
 
+import {copy} from "../helpers/misc";
 import {formatCLP} from '../helpers/formats';
 import {is_retirement_account} from '../helpers/accounts';
 import {sum_account_values} from '../helpers/accounts';
@@ -43,10 +44,11 @@ export default class SummaryAFP extends Component {
 
   render() {
     const elems = this.state.account_values;
+    console.log("rendering afp page", elems);
     if (elems.length === 0) {
         return ""
     }
-    const elems_retirement = elems.filter(elem => is_retirement_account(elem))
+    const elems_retirement = copy(elems.filter(elem => is_retirement_account(elem)));
     const total_retirement = sum_account_values(elems_retirement);
     const total_investments = sum_account_investments(elems_retirement);
     const total_gains = total_retirement - total_investments;
@@ -66,10 +68,7 @@ export default class SummaryAFP extends Component {
                                             total={formatCLP(total_gains)} />
                 </Col>
               </Row>
-              <AccountValueList collect={UserService.getCurrentAccountValues}
-                                name="content"
-                                choice={val => is_retirement_account(val)}
-                                month={0} />
+              <AccountTable elems={elems_retirement} />
             </Container>
             </div>);
   }
