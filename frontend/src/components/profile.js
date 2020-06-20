@@ -7,10 +7,12 @@ import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
+import {AreaChart} from "./charts";
 import {formatCLP} from "../helpers/formats";
 import {formatPct} from "../helpers/formats";
 import {SummarisingValueRenderer} from "./expenses";
 import {Chart} from "./charts";
+import {copy} from "../helpers/misc";
 
 export default class Profile extends Component {
   constructor(props) {
@@ -22,11 +24,14 @@ export default class Profile extends Component {
       income: 0,
       netWorth: 0,
       netWorthHistory: [],
+      showPlot: "networth",
     };
     this.handleChangeExpenses = this.handleChangeExpenses.bind(this);
     this.handleChangeIncome = this.handleChangeIncome.bind(this);
     this.handleChangeNetWorth = this.handleChangeNetWorth.bind(this);
     this.handleChangeNetWorthHistory = this.handleChangeNetWorthHistory.bind(this);
+    this.chosePlotSavingsRate = this.chosePlotSavingsRate.bind(this);
+    this.chosePlotNetworth = this.chosePlotNetworth.bind(this);
     this.selector = this.selector.bind(this);
   }
 
@@ -69,13 +74,25 @@ export default class Profile extends Component {
     this.setState({netWorthHistory: e.content});
   }
 
+  chosePlotNetworth() {
+    console.log("Update state: show plot networth");
+    this.setState({showPlot: "networth"})
+  }
+
+  chosePlotSavingsRate() {
+    console.log("Update state: show plot savingsrate");
+    this.setState({showPlot: "savingsrate"})
+  }
+
   selector(response) {
     return response.data
   }
 
   render() {
-    console.log(this.state);
-    const nwHistory = this.state.netWorthHistory;
+    console.log("Rendering Profile", this.state);
+    const nwHistory = copy(this.state.netWorthHistory);
+    const keyPlot = this.state.showPlot;
+    const plotData = {"networth": nwHistory};
     return (
       <div>
       <Container>
@@ -100,17 +117,19 @@ export default class Profile extends Component {
       <Col>
       <SummarisingValueRenderer
         title={"Networth"}
+        onClickHandler={this.chosePlotNetworth}
         total={formatCLP(this.state.netWorth)}/>
       </Col>
       <Col>
       <SummarisingValueRenderer
         title={"Average Monthly Savings Rate"}
+        onClickHandler={this.chosePlotSavingsRate}
         total={formatPct(100*(this.state.income - this.state.expenses) / (this.state.income))}/>
       </Col>
       <Col>
       </Col>
       </Row>
-      <ShowNetWorthHistoryChart data={nwHistory} />
+      <ShowPlot selection={keyPlot} data={plotData} />
       </Container>
       </div>
     );
@@ -123,14 +142,13 @@ const ShowMonth = ({elem}) => (
 );
 
 
-function ShowNetWorthHistoryChart(props) {
-  return (<Chart
-    type="area"
-    month={0}
-    data={props.data}
-    />);
+function ShowPlot(props) {
+  if ("networth" === props.selection) {
+    return <AreaChart data={props.data["networth"]} />
+  } else {
+      return "ok"
   }
-
+}
 
 const ProfileRenderer = ({user}) => (
   <div className="container">

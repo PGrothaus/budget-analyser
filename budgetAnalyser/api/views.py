@@ -346,6 +346,70 @@ class NetWorthHistoryView(generics.GenericAPIView,
 networth_history = NetWorthHistoryView.as_view()
 
 
+class RetirementHistoryView(generics.GenericAPIView,
+                            mixins.ListModelMixin):
+    serializer_class = serializers.NetworthSerializer
+
+    def get_queryset(self):
+        return NetWorth.objects.filter(
+            user=self.request.user,
+            type="retirement"
+            ).order_by('valued_at')
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+retirement_history = RetirementHistoryView.as_view()
+
+
+class RetirementInvestmentHistoryView(generics.GenericAPIView,
+                            mixins.ListModelMixin):
+    serializer_class = serializers.NetworthSerializer
+
+    def get_queryset(self):
+        return NetWorth.objects.filter(
+            user=self.request.user,
+            type="retirement_investment"
+            ).order_by('valued_at')
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+retirement_investment_history = RetirementInvestmentHistoryView.as_view()
+
+
+class SavingsHistoryView(generics.GenericAPIView,
+                            mixins.ListModelMixin):
+    serializer_class = serializers.NetworthSerializer
+
+    def get_queryset(self):
+        return NetWorth.objects.filter(
+            user=self.request.user,
+            type="savings"
+            ).order_by('valued_at')
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+savings_history = SavingsHistoryView.as_view()
+
+
+class SavingsInvestmentHistoryView(generics.GenericAPIView,
+                            mixins.ListModelMixin):
+    serializer_class = serializers.NetworthSerializer
+
+    def get_queryset(self):
+        return NetWorth.objects.filter(
+            user=self.request.user,
+            type="savings_investment"
+            ).order_by('valued_at')
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+savings_investment_history = SavingsInvestmentHistoryView.as_view()
+
+
 class CurrentAssetValuesView(generics.GenericAPIView,
                              mixins.ListModelMixin):
     serializer_class = serializers.AssetValueSerializer
