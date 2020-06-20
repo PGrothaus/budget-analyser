@@ -45,10 +45,22 @@ class UserService {
     return axios.get(API_URL + 'income/average', { headers: authHeader() });
   }
 
+  getMonthwiseIncome(props) {
+    console.log("get monthwise Income", props);
+    const month = props.toString();
+    return axios.get(API_URL + 'income/monthwise', { headers: authHeader() });
+  }
+
   getExpenses(props) {
     console.log("getExpenses", props);
     const month = props.toString();
     return axios.get(API_URL + 'expenses?date__month=' + month, { headers: authHeader() });
+  }
+
+  getMonthwiseExpenses(props) {
+    console.log("get monthwise Expenses", props);
+    const month = props.toString();
+    return axios.get(API_URL + 'expenses/monthwise', { headers: authHeader() });
   }
 
   getAssetList(props) {
