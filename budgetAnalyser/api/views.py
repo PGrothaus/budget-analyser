@@ -9,6 +9,7 @@ from django.db.models import Avg
 from django.db.models import Sum
 from django.db.models.functions import ExtractMonth as Month
 from django.db.models.functions import TruncMonth
+from django.db.models.functions import TruncYear
 from rest_framework import generics
 from rest_framework import mixins
 from rest_framework import viewsets
@@ -157,6 +158,68 @@ class AverageExpensesViewSet(viewsets.ModelViewSet):
 
 
 average_expenses = AverageExpensesViewSet.as_view({'get': 'list'})
+
+
+class MonthwiseExpensesViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.MonthwiseSerializer
+
+    def get_queryset(self):
+        qp = {k: v for k, v in self.request.query_params.items()}
+        today = date.today()
+        firstThisMonth = today.replace(day=1)
+        firstLastMonth = firstThisMonth - timedelta(days=1)
+        firstInitMonth = "2020-02-01"
+        return [Transaction.objects.filter(
+                user=self.request.user,
+                type='expense',
+                account__type=2
+            ).exclude(
+                category__group__type='neutral'
+            ).filter(
+                date__gte=firstInitMonth
+            ).filter(
+                date__lte=firstLastMonth
+            ).annotate(
+                month=TruncMonth('date'),
+                year=TruncYear('date')
+            ).values(
+                'year', 'month'
+            ).annotate(
+                monthly_total=Sum('amount')
+            ).order_by('month')]
+
+monthwise_expenses = MonthwiseExpensesViewSet.as_view({'get': 'list'})
+
+
+class MonthwiseIncomeViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.MonthwiseSerializer
+
+    def get_queryset(self):
+        qp = {k: v for k, v in self.request.query_params.items()}
+        today = date.today()
+        firstThisMonth = today.replace(day=1)
+        firstLastMonth = firstThisMonth - timedelta(days=1)
+        firstInitMonth = "2020-02-01"
+        return [Transaction.objects.filter(
+                user=self.request.user,
+                type='income',
+                account__type=2
+            ).exclude(
+                category__group__type='neutral'
+            ).filter(
+                date__gte=firstInitMonth
+            ).filter(
+                date__lte=firstLastMonth
+            ).annotate(
+                month=TruncMonth('date'),
+                year=TruncYear('date')
+            ).values(
+                'year', 'month'
+            ).annotate(
+                monthly_total=Sum('amount')
+            ).order_by('month')]
+
+monthwise_income = MonthwiseIncomeViewSet.as_view({'get': 'list'})
 
 
 class AverageIncomeViewSet(viewsets.ModelViewSet):

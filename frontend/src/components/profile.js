@@ -8,6 +8,7 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
 import {AreaChart} from "./charts";
+import {VerticalBarChart} from "./charts";
 import {formatCLP} from "../helpers/formats";
 import {formatPct} from "../helpers/formats";
 import {SummarisingValueRenderer} from "./expenses";
@@ -25,13 +26,20 @@ export default class Profile extends Component {
       netWorth: 0,
       netWorthHistory: [],
       showPlot: "networth",
+      monthwiseExpenses: [],
+      monthwiseIncome: [],
     };
     this.handleChangeExpenses = this.handleChangeExpenses.bind(this);
     this.handleChangeIncome = this.handleChangeIncome.bind(this);
     this.handleChangeNetWorth = this.handleChangeNetWorth.bind(this);
     this.handleChangeNetWorthHistory = this.handleChangeNetWorthHistory.bind(this);
+    this.handleChangeMonthwiseExpenses = this.handleChangeMonthwiseExpenses.bind(this);
+    this.handleChangeMonthwiseIncome = this.handleChangeMonthwiseIncome.bind(this);
     this.chosePlotSavingsRate = this.chosePlotSavingsRate.bind(this);
+    this.chosePlotSavings = this.chosePlotSavings.bind(this);
     this.chosePlotNetworth = this.chosePlotNetworth.bind(this);
+    this.chosePlotIncome = this.chosePlotIncome.bind(this);
+    this.chosePlotExpenses = this.chosePlotExpenses.bind(this);
     this.selector = this.selector.bind(this);
   }
 
@@ -51,6 +59,14 @@ export default class Profile extends Component {
     fetch(UserService.getNetWorthHistory,
           0,
           this.handleChangeNetWorthHistory,
+          this.selector);
+    fetch(UserService.getMonthwiseExpenses,
+          0,
+          this.handleChangeMonthwiseExpenses,
+          this.selector);
+    fetch(UserService.getMonthwiseIncome,
+          0,
+          this.handleChangeMonthwiseIncome,
           this.selector);
   }
 
@@ -74,6 +90,16 @@ export default class Profile extends Component {
     this.setState({netWorthHistory: e.content});
   }
 
+  handleChangeMonthwiseExpenses(e) {
+    console.log("update state: monthwise expenses", e);
+    this.setState({monthwiseExpenses: e.content[0]});
+  }
+
+  handleChangeMonthwiseIncome(e) {
+    console.log("update state: monthwise income", e);
+    this.setState({monthwiseIncome: e.content[0]});
+  }
+
   chosePlotNetworth() {
     console.log("Update state: show plot networth");
     this.setState({showPlot: "networth"})
@@ -84,6 +110,21 @@ export default class Profile extends Component {
     this.setState({showPlot: "savingsrate"})
   }
 
+  chosePlotSavings() {
+    console.log("Update state: show plot savings");
+    this.setState({showPlot: "savings"})
+  }
+
+  chosePlotIncome() {
+    console.log("Update state: show plot income");
+    this.setState({showPlot: "income"})
+  }
+
+  chosePlotExpenses() {
+    console.log("Update state: show plot expenses");
+    this.setState({showPlot: "expenses"})
+  }
+
   selector(response) {
     return response.data
   }
@@ -91,8 +132,16 @@ export default class Profile extends Component {
   render() {
     console.log("Rendering Profile", this.state);
     const nwHistory = copy(this.state.netWorthHistory);
+    const monthwiseIncome = copy(this.state.monthwiseIncome);
+    const monthwiseExpenses = copy(this.state.monthwiseExpenses);
+    const monthwiseSavings = calculateDifference(monthwiseIncome, monthwiseExpenses);
+    const savingRates = calculateSRs(monthwiseSavings, monthwiseIncome);
     const keyPlot = this.state.showPlot;
-    const plotData = {"networth": nwHistory};
+    const plotData = {"networth": nwHistory,
+                      "income": monthwiseIncome,
+                      "expenses": monthwiseExpenses,
+                      "savings": monthwiseSavings,
+                      "savingsrate": savingRates};
     return (
       <div>
       <Container>
@@ -100,16 +149,19 @@ export default class Profile extends Component {
       <Col>
       <SummarisingValueRenderer
         title={"Average Monthly Income"}
+        onClickHandler={this.chosePlotIncome}
         total={formatCLP(this.state.income)}/>
       </Col>
       <Col>
       <SummarisingValueRenderer
         title={"Average Monthly Expenses"}
+        onClickHandler={this.chosePlotExpenses}
         total={formatCLP(this.state.expenses)}/>
       </Col>
       <Col>
       <SummarisingValueRenderer
         title={"Average Monthly Savings"}
+        onClickHandler={this.chosePlotSavings}
         total={formatCLP(this.state.income - this.state.expenses)}/>
       </Col>
       </Row>
@@ -145,8 +197,16 @@ const ShowMonth = ({elem}) => (
 function ShowPlot(props) {
   if ("networth" === props.selection) {
     return <AreaChart data={props.data["networth"]} />
-  } else {
-      return "ok"
+  } else if ("income" === props.selection) {
+      return <VerticalBarChart data={props.data["income"]} />
+    } else if ("expenses" === props.selection) {
+        return <VerticalBarChart data={props.data["expenses"]} />
+      } else if ("savings" === props.selection) {
+          return <VerticalBarChart data={props.data["savings"]} />
+        } else if ("savingsrate" === props.selection) {
+            return <VerticalBarChart data={props.data["savingsrate"]} />
+        } else {
+    return props.selection
   }
 }
 
@@ -164,3 +224,38 @@ const ProfileRenderer = ({user}) => (
     </p>
   </div>
 );
+
+
+function calculateSRs(savings, income) {
+  const rates = copy(savings);
+  rates.forEach((item, i) => {
+    const exp = findCorrespondingExpenses(item, income);
+    const delta = 100. * item.monthly_total / exp.monthly_total;
+    console.log("rate", delta)
+    item.monthly_total = delta
+  });
+  return rates
+}
+
+
+function calculateDifference(income, expenses) {
+  const savings = copy(income);
+  savings.forEach((elem, i) => {
+    const exp = findCorrespondingExpenses(elem, expenses);
+    console.log(elem.monthly_total, exp.monthly_total);
+    const delta = elem.monthly_total - exp.monthly_total;
+    elem.monthly_total = delta
+  });
+  return savings
+}
+
+function findCorrespondingExpenses(elem, expenses) {
+  var selected = 0;
+  expenses.forEach((item, i) => {
+    if (elem.month === item.month) {
+      selected = copy(item);
+    }
+
+  });
+  return selected
+}

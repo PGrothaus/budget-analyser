@@ -12,6 +12,7 @@ export const makeStackedArea = (svg, dati) => {
   svg.selectAll('path').remove();
   svg.selectAll('area').remove();
   svg.selectAll('dot').remove();
+  svg.selectAll('g').remove();
 
   // parse the date / time
   var parseTime = d3.timeParse("%Y-%m-%d");

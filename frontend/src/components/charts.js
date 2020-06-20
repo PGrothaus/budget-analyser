@@ -2,6 +2,7 @@
 import React from 'react';
 import { makePie } from '../helpers/pie';
 import { makeBar } from '../helpers/bar';
+import { makeVerticalBar } from '../helpers/verticalBar';
 import { makeArea } from '../helpers/area';
 import { makeStackedArea } from '../helpers/stackedArea';
 /* Component */
@@ -29,6 +30,11 @@ const Chart = (props) => {
 
                   case 'bar': {
                     makeBar(svg, data);
+                    break;
+                  }
+
+                  case 'bar-vertical': {
+                    makeVerticalBar(svg, data);
                     break;
                   }
 
@@ -94,6 +100,16 @@ export function BarChart(props) {
     <Chart
       type="bar"
       data={props.elems}
+      />
+  )
+}
+
+
+export function VerticalBarChart(props) {
+  return (
+    <Chart
+      type="bar-vertical"
+      data={props.data}
       />
   )
 }
