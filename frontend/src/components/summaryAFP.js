@@ -8,6 +8,7 @@ import {fetch} from "../services/user.services";
 
 import {SummarisingValueRenderer} from './expenses';
 import {AccountTable} from './tables';
+import {StackedAreaChart} from "./charts";
 
 import {copy} from "../helpers/misc";
 import {formatCLP} from '../helpers/formats';
@@ -20,10 +21,14 @@ export default class SummaryAFP extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      account_values: []
+      account_values: [],
+      retirementHistory: [],
+      retirementInvestmentHistory: [],
     }
     this.fetch_all = this.fetch_all.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.onChangeRetirementHistory = this.onChangeRetirementHistory.bind(this);
+    this.onChangeRetirementInvestmentHistory = this.onChangeRetirementInvestmentHistory.bind(this);
     this.selector = this.selector.bind(this);
   }
 
@@ -36,14 +41,28 @@ export default class SummaryAFP extends Component {
     this.setState({account_values: newState.content});
   }
 
+  onChangeRetirementHistory(newState) {
+    console.log("Setting new retirement history state", newState);
+    this.setState({retirementHistory: newState.content});
+  }
+
+  onChangeRetirementInvestmentHistory(newState) {
+    console.log("Setting new retirement investment history state", newState);
+    this.setState({retirementInvestmentHistory: newState.content});
+  }
+
   selector(val) {return val.data;}
 
   fetch_all() {
     fetch(UserService.getCurrentAccountValues, 0, this.onChange, this.selector);
+    fetch(UserService.getRetirementHistory, 0, this.onChangeRetirementHistory, this.selector);
+    fetch(UserService.getRetirementInvestmentHistory, 0, this.onChangeRetirementInvestmentHistory, this.selector);
   }
 
   render() {
     const elems = this.state.account_values;
+    const retirementHistory = this.state.retirementHistory;
+    const retirementInvestmentHistory = this.state.retirementInvestmentHistory;
     console.log("rendering afp page", elems);
     if (elems.length === 0) {
         return ""
@@ -70,6 +89,8 @@ export default class SummaryAFP extends Component {
               </Row>
               <AccountTable elems={elems_retirement} />
             </Container>
-            </div>);
+            <StackedAreaChart data={[retirementHistory, retirementInvestmentHistory]} />
+            </div>
+          );
   }
 }

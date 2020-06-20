@@ -14,6 +14,10 @@ from api.views import monthly_income
 from api.views import complete_monthly_income
 from api.views import networth
 from api.views import networth_history
+from api.views import retirement_history
+from api.views import retirement_investment_history
+from api.views import savings_history
+from api.views import savings_investment_history
 from api.views import average_expenses
 from api.views import average_income
 from api.views import transaction_detail
@@ -40,5 +44,9 @@ def get_api_urls():
         path('api/income/grouped', income_grouped_detail),
         path('api/networth', networth),
         path('api/networth/history', networth_history),
+        path('api/retirement/history', retirement_history),
+        path('api/retirement/investment/history', retirement_investment_history),
+        path('api/savings/history', savings_history),
+        path('api/savings/investment/history', savings_investment_history),
         path('api/exchange_rate_add', exchange_rate_add),
     ]

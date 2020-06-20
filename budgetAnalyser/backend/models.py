@@ -196,7 +196,7 @@ class NetWorth(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     valued_at = models.DateTimeField()
     value = models.FloatField()
-    type = models.CharField(max_length=20, default="networth")
+    type = models.CharField(max_length=40, default="networth")
 
     class Meta:
         constraints = [

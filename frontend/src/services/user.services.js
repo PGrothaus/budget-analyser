@@ -6,13 +6,33 @@ const API_URL = 'http://127.0.0.1:8000/api/';
 class UserService {
 
   getNetWorth(props) {
-    console.log("NetWorth", props);
+    console.log("Get networth", props);
     return axios.get(API_URL + 'networth', { headers: authHeader() });
   }
 
   getNetWorthHistory(props) {
-    console.log("NetWorth", props);
+    console.log("Get networth history", props);
     return axios.get(API_URL + 'networth/history', { headers: authHeader() });
+  }
+
+  getRetirementHistory(props) {
+    console.log("Get retirement history", props);
+    return axios.get(API_URL + 'retirement/history', { headers: authHeader() });
+  }
+
+  getRetirementInvestmentHistory(props) {
+    console.log("Get retirement investment history", props);
+    return axios.get(API_URL + 'retirement/investment/history', { headers: authHeader() });
+  }
+
+  getSavingsHistory(props) {
+    console.log("Get savings history", props);
+    return axios.get(API_URL + 'savings/history', { headers: authHeader() });
+  }
+
+  getSavingsInvestmentHistory(props) {
+    console.log("Get savings investment history", props);
+    return axios.get(API_URL + 'savings/investment/history', { headers: authHeader() });
   }
 
   getAverageExpenses(props) {

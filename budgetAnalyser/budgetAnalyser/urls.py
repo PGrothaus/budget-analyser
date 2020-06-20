@@ -8,8 +8,7 @@ from rest_framework_simplejwt.views import (
 )
 
 from backend import views as backend_views
-from business_logic.tasks import calculate_networth_all_users
-from business_logic.tasks import collect_all_exchange_rates
+from business_logic import tasks
 from api.urls import get_api_urls
 from rule_system.urls import get_rule_system_urls
 from dummy_frontend.urls import get_frontend_urls
@@ -59,18 +58,47 @@ urlpatterns += [
     name='investment_input')
 ]
 
+# schedule rate collection
+n_tasks = len(task_models.Task.objects.filter(task_name="business_logic.tasks.collect_all_exchange_rates"))
+if n_tasks == 0:
+    print("scheduling exchange rate collection")
+    tasks.collect_all_exchange_rates(verbose_name="Collect All Exchange Rates",
+                               repeat=60*60*24)
+
 
 # schedule NW calculation
 n_tasks = len(task_models.Task.objects.filter(task_name="business_logic.tasks.calculate_networth_all_users"))
 if n_tasks == 0:
     print("scheduling networth calculation")
-    calculate_networth_all_users(verbose_name="Calculate Networth All Users",
+    tasks.calculate_networth_all_users(verbose_name="Calculate Networth All Users",
                                  repeat=60*60*24)
 
 
-# schedule NW calculation
-n_tasks = len(task_models.Task.objects.filter(task_name="business_logic.tasks.collect_all_exchange_rates"))
+# schedule total retirement calculation
+n_tasks = len(task_models.Task.objects.filter(task_name="business_logic.tasks.calculate_total_retirement_all_users"))
 if n_tasks == 0:
-    print("scheduling exchange rate collection")
-    collect_all_exchange_rates(verbose_name="Collect All Exchange Rates",
-                               repeat=60*60*24)
+    print("scheduling total retirement calculation")
+    tasks.calculate_total_retirement_all_users(verbose_name="Calculate Total Retirement",
+                                         repeat=60*60*24)
+
+# schedule savings calculation
+n_tasks = len(task_models.Task.objects.filter(task_name="business_logic.tasks.calculate_savings_all_users"))
+if n_tasks == 0:
+    print("scheduling savings calculation")
+    tasks.calculate_savings_all_users(verbose_name="Calculate Savings",
+                                repeat=60*60*24)
+
+
+# schedule total retirement investment calculation
+n_tasks = len(task_models.Task.objects.filter(task_name="business_logic.tasks.calculate_total_retirement_investments_all_users"))
+if n_tasks == 0:
+    print("scheduling total retirement investment calculation")
+    tasks.calculate_total_retirement_investments_all_users(verbose_name="Calculate Total Retirement Investment",
+                                                           repeat=60*60*24)
+
+# schedule savings investment calculation
+n_tasks = len(task_models.Task.objects.filter(task_name="business_logic.tasks.calculate_savings_investments_all_users"))
+if n_tasks == 0:
+    print("scheduling savings investment calculation")
+    tasks.calculate_savings_investments_all_users(verbose_name="Calculate Savings Investments",
+                                                  repeat=60*60*24)

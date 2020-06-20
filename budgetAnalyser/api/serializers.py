@@ -13,6 +13,7 @@ from backend.models import ExchangeRate
 from backend.models import NetWorth
 from backend.models import Transaction
 from business_logic import helpers
+from business_logic import metrics
 
 
 class CurrencySerializer(serializers.ModelSerializer):
@@ -59,28 +60,7 @@ class AccountValueSerializer(serializers.ModelSerializer):
     invested_money = serializers.SerializerMethodField('calc_invested_money')
 
     def calc_invested_money(self, obj):
-        if obj.account.type.id == 2:
-            return None
-        val_in = Transaction.objects.filter(
-            account_id=obj.account.id,
-        ).exclude(
-            type='expense'
-        ).aggregate(
-            total=Sum('amount')
-        )["total"]
-        val_out = Transaction.objects.filter(
-            account_id=obj.account.id,
-            type='expense'
-        ).aggregate(
-            total=Sum('amount')
-        )["total"]
-        if val_in is None:
-            return None
-        tmp = Transaction.objects.filter(
-            account_id=obj.account.id)[0]
-        val_out = 0 if val_out is None else val_out
-        delta = val_in - val_out
-        return helpers.exchange(delta, tmp.currency, "CLP")
+        return metrics.invested_money(obj.account)
 
     class Meta:
         model = AccountValue

@@ -3,6 +3,7 @@ import React from 'react';
 import { makePie } from '../helpers/pie';
 import { makeBar } from '../helpers/bar';
 import { makeArea } from '../helpers/area';
+import { makeStackedArea } from '../helpers/stackedArea';
 /* Component */
 const Chart = (props) => {
     const { width, height } = props;
@@ -35,6 +36,11 @@ const Chart = (props) => {
                     makeArea(svg, data);
                     break;
                   }
+
+                  case 'stacked-area': {
+                    makeStackedArea(svg, data);
+                    break;
+                  }
               }
 
               // path.exit().remove();
@@ -61,6 +67,27 @@ const Chart = (props) => {
       </div>
     );
 };
+
+
+export function StackedAreaChart(props) {
+  return (
+    <Chart
+      type="stacked-area"
+      data={props.data}
+      />
+  );
+}
+
+
+export function AreaChart(props) {
+  return (
+    <Chart
+      type="area"
+      data={props.data}
+      />
+  );
+}
+
 
 export function BarChart(props) {
   return (

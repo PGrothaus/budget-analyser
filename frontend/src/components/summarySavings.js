@@ -8,6 +8,7 @@ import {fetch} from "../services/user.services";
 
 import {SummarisingValueRenderer} from './expenses';
 import {AccountTable} from './tables';
+import {StackedAreaChart} from "./charts";
 
 import {copy} from "../helpers/misc";
 import {formatCLP} from '../helpers/formats';
@@ -20,10 +21,14 @@ export default class SummarySavings extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      account_values: []
+      account_values: [],
+      savingsHistory: [],
+      savingsInvestmentHistory: [],
     }
     this.fetch_all = this.fetch_all.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.onChangeSavingsHistory = this.onChangeSavingsHistory.bind(this);
+    this.onChangeSavingsInvestmentHistory = this.onChangeSavingsInvestmentHistory.bind(this);
     this.selector = this.selector.bind(this);
   }
 
@@ -36,14 +41,28 @@ export default class SummarySavings extends Component {
     this.setState({account_values: newState.content});
   }
 
+  onChangeSavingsHistory(newState) {
+    console.log("Updating state: savingsHistory", newState);
+    this.setState({savingsHistory: newState.content});
+  }
+
+  onChangeSavingsInvestmentHistory(newState) {
+    console.log("Updating state: savingsInvestmentHistory", newState);
+    this.setState({savingsInvestmentHistory: newState.content});
+  }
+
   selector(val) {return val.data;}
 
   fetch_all() {
     fetch(UserService.getCurrentAccountValues, 0, this.onChange, this.selector);
+    fetch(UserService.getSavingsHistory, 0, this.onChangeSavingsHistory, this.selector);
+    fetch(UserService.getSavingsInvestmentHistory, 0, this.onChangeSavingsInvestmentHistory, this.selector);
   }
 
   render() {
     const elems = this.state.account_values;
+    const savingsHistory = this.state.savingsHistory;
+    const savingsInvestmentHistory = this.state.savingsInvestmentHistory;
     if (elems.length === 0) {
         return ""
     }
@@ -65,6 +84,8 @@ export default class SummarySavings extends Component {
               </Row>
               <AccountTable elems={elems_liquid} />
             </Container>
-            </div>);
+            <StackedAreaChart data={[savingsHistory, savingsInvestmentHistory]} />
+            </div>
+          );
   }
 }
