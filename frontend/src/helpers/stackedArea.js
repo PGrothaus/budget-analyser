@@ -82,16 +82,8 @@ export const makeStackedArea = (svg, dati) => {
   // add the area
   svg.append("path")
      .data([data])
-     .attr("fill", "#FFFFFF")
-     .attr("class", "upperArea")
-     .attr("transform",
-           "translate(" + (margin.left + 1) + "," + (margin.top) + ")")
-     .attr("d", upperArea);
-
-  // add the area
-  svg.append("path")
-     .data([data])
      .attr("fill", "#cceedf")
+     .attr("stroke", "#000000")
      .attr("class", "area")
      .attr("transform",
            "translate(" + (margin.left + 1) + "," + (margin.top) + ")")
@@ -101,32 +93,11 @@ export const makeStackedArea = (svg, dati) => {
   svg.append("path")
     .data([data2])
     .attr("fill", "#aaccbd")
+    .attr("stroke", "#000000")
     .attr("class", "area")
     .attr("transform",
           "translate(" + (margin.left + 1) + "," + (margin.top) + ")")
     .attr("d", area);
-
-
-    // add the valueline path.
-    svg.append("path")
-        .data([data])
-        .attr("class", "line")
-        .attr("stroke", "#000000")
-        .attr("stroke-width", 1.5)
-        .attr("transform",
-              "translate(" + (margin.left) + "," + (margin.top) + ")")
-        .attr("d", valueline);
-
-    // add the valueline path.
-    svg.append("path")
-        .data([data2])
-        .attr("class", "line")
-        .attr("stroke", "#000000")
-        .attr("stroke-width", 1.5)
-        .attr("transform",
-              "translate(" + (margin.left) + "," + (margin.top) + ")")
-        .attr("d", valueline);
-
 
   // Add the data points
   svg.selectAll("dot")
