@@ -73,36 +73,16 @@ const makeArea = (svg, data) => {
       .attr("transform", "translate(" + (margin.left) + "," + (margin.top) + ")")
       .call(d3.axisLeft(y));
 
-  // add the valueline path.
-  svg.append("path")
-      .data([data])
-      .attr("class", "line")
-      .attr("stroke", "#000000")
-      .attr("stroke-width", 1.5)
-      .attr("transform",
-            "translate(" + (margin.left) + "," + (margin.top) + ")")
-      .attr("d", valueline);
-
-
-  // add the area
-  svg.append("path")
-     .data([data])
-     .attr("fill", "#FFFFFF")
-     .attr("class", "upperArea")
-     .attr("transform",
-           "translate(" + (margin.left + 1) + "," + (margin.top) + ")")
-     .attr("d", upperArea);
 
   // add the area
   svg.append("path")
      .data([data])
      .attr("fill", "#cce5df")
+     .attr("stroke", "#000000")
      .attr("class", "area")
      .attr("transform",
            "translate(" + (margin.left + 1) + "," + (margin.top) + ")")
      .attr("d", area);
-
-
 
   // Add the data points
   svg.selectAll("dot")
