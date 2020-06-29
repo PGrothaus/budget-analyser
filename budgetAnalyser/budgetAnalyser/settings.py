@@ -85,6 +85,11 @@ WSGI_APPLICATION = 'budgetAnalyser.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
+DATABASE_POOL_ARGS = {
+    'max_overflow': 0,
+    'pool_size': 1,
+    'recycle': 300
+}
 
 DATABASES = {
     'default': {
@@ -92,7 +97,7 @@ DATABASES = {
         'NAME': secrets.DB_NAME,
         'USER': secrets.DB_USER,
         'PASSWORD': secrets.DB_PASSWORD,
-        'HOST': '127.0.0.1',
+        'HOST': 'finances.clecutcegg0a.us-east-2.rds.amazonaws.com',  # '127.0.0.1',
         'PORT': '5432',
     }
 }
