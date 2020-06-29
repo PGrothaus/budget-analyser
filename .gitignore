@@ -131,6 +131,8 @@ dmypy.json
 # Data Files
 data/*
 test_upload.json
+secrets/*
+budgetAnalyser/other/*
 
 # Node
 node_modules/*
