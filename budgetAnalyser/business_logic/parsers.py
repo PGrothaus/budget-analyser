@@ -163,6 +163,7 @@ def _format_transaction_datum(datum, file_key, base_repr):
 def _format_description(description):
     description = " ".join(description.split())
     description = description.lower()
+    description = description.replace('santiago', 'compras')
     description = description.capitalize()
     return description
 

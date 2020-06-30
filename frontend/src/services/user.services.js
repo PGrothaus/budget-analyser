@@ -1,7 +1,7 @@
 import axios from 'axios';
 import authHeader from './auth-header';
 
-const API_URL = 'http://127.0.0.1:8000/api/';
+const API_URL = 'http://ec2-18-222-140-19.us-east-2.compute.amazonaws.com:8000/api/';
 
 class UserService {
 
