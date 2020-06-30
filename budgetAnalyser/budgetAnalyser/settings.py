@@ -25,12 +25,23 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = secrets.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 CORS_ORIGIN_ALLOW_ALL=True
 
+PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+        os.path.join(PROJECT_ROOT, 'static'),
+)
+print(STATICFILES_DIRS)
+STATICFILES_FINDERS = (
+            'django.contrib.staticfiles.finders.FileSystemFinder',
+            'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+)
 # Application definition
 
 INSTALLED_APPS = [
