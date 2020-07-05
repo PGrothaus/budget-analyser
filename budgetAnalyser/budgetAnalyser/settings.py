@@ -21,6 +21,7 @@ load_dotenv('../frontend/.env')
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 env = os.getenv('REACT_APP_TARGET_ENV')
 print('Environment is', env)
+assert env in ['PRODUCTION', 'DEV']
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -29,9 +30,9 @@ print('Environment is', env)
 SECRET_KEY = secrets.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-if env == 'PRODUCTION':
-    DEBUG = False
+DEBUG = False
+if env != 'PRODUCTION':
+    DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 if env == 'PRODUCTION':
@@ -39,6 +40,17 @@ if env == 'PRODUCTION':
 
 CORS_ORIGIN_ALLOW_ALL=True
 
+PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+        os.path.join(PROJECT_ROOT, 'static'),
+)
+print(STATICFILES_DIRS)
+STATICFILES_FINDERS = (
+            'django.contrib.staticfiles.finders.FileSystemFinder',
+            'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+)
 # Application definition
 
 INSTALLED_APPS = [
