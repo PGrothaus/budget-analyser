@@ -8,6 +8,7 @@ from . import parsers
 from . import queries
 from . import utils
 from . import extractors
+from . import metrics
 from backend.models import AccountValue
 from backend.models import Currency
 from backend.models import ExchangeRate
@@ -26,10 +27,19 @@ def handle_transactions_upload(request):
     utils.save_uploaded_file(filepath, request.FILES['file'])
     _save_account_values_from_file_to_db(
         filepath, account, request.user, entry_file)
-    transactions_new = _save_transactions_from_file_to_db(
+    transactions_new, transactions_old = _save_transactions_from_file_to_db(
         filepath, account, request.user, entry_file)
 
     _apply_rules_to_uncategorized_transactions(request)
+    all_trans = transactions_new + transactions_old
+    print(all_trans)
+    firstTransaction = sorted(all_trans, key=lambda elem: elem["date"])[0]
+    when = firstTransaction["date"]
+    metrics.recalculate(request.user, "networth", when)
+    metrics.recalculate(request.user, "savings", when)
+    metrics.recalculate(request.user, "retirement", when)
+    metrics.update_savings_investments(request.user, when)
+    metrics.update_retirement_investments(request.user, when)
 
 
 def handle_transaction_update(request, transaction):
@@ -133,12 +143,15 @@ def _save_transactions_from_file_to_db(filepath, account, user, file):
     defaults = {"data_file_id": file.id}
     transaction_data = parsers.parse_transaction_file(filepath, base_repr=base_repr)
     transactions_added = []
+    transactions_old = []
     for datum in transaction_data:
         datum = extractors.transaction(datum)
         datum.update(defaults)
         if _add_transaction(**datum):
             transactions_added.append(datum)
-    return transactions_added
+        else:
+            transactions_old.append(datum)
+    return transactions_added, transactions_old
 
 
 def _save_account_values_from_file_to_db(filepath, account, user, file):

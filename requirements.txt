@@ -14,6 +14,7 @@ django-background-tasks
 
 # Utils
 python-dateutil
+python-dotenv
 
 # Formatting
 markdown

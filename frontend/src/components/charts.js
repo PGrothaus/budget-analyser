@@ -19,9 +19,10 @@ const Chart = (props) => {
         () => {
             const { data, type } = props;
 
-            if (data && d3Container.current) {
-              const svg = d3.select(d3Container.current);
+            if (data.length > 0 && d3Container.current) {
               console.log('Going to do a render a pie of type:', type);
+              console.log("with data", data);
+              const svg = d3.select(d3Container.current);
               switch (type) {
                   case 'pie': {
                     makePie(svg, data);

@@ -9,14 +9,18 @@ https://docs.djangoproject.com/en/3.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
+import os
+
+from datetime import timedelta
+from dotenv import load_dotenv, find_dotenv
 
 import budgetAnalyser.secrets as secrets
-import os
-from datetime import timedelta
 
+load_dotenv('../frontend/.env')
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+env = os.getenv('REACT_APP_TARGET_ENV')
+print('Environment is', env)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -26,8 +30,12 @@ SECRET_KEY = secrets.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+if env == 'PRODUCTION':
+    DEBUG = False
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+if env == 'PRODUCTION':
+    ALLOWED_HOSTS = ['*']
 
 CORS_ORIGIN_ALLOW_ALL=True
 
@@ -83,24 +91,27 @@ TEMPLATES = [
 WSGI_APPLICATION = 'budgetAnalyser.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-DATABASE_POOL_ARGS = {
-    'max_overflow': 0,
-    'pool_size': 1,
-    'recycle': 300
-}
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': secrets.DB_NAME,
-        'USER': secrets.DB_USER,
-        'PASSWORD': secrets.DB_PASSWORD,
-        'HOST': 'finances.clecutcegg0a.us-east-2.rds.amazonaws.com',  # '127.0.0.1',
+        'NAME': secrets.DB_NAME_DEV,
+        'USER': secrets.DB_USER_DEV,
+        'PASSWORD': secrets.DB_PASSWORD_DEV,
+        'HOST': '127.0.0.1',
         'PORT': '5432',
     }
 }
+if env == 'PRODUCTION':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': secrets.DB_NAME_PROD,
+            'USER': secrets.DB_USER_PROD,
+            'PASSWORD': secrets.DB_PASSWORD_PROD,
+            'HOST': 'finances.clecutcegg0a.us-east-2.rds.amazonaws.com',  # '127.0.0.1',
+            'PORT': '5432',
+        }
+    }
 
 
 # Password validation

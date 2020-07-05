@@ -91,28 +91,14 @@ export const makeStackedArea = (svg, dati) => {
 
   // add the area
   svg.append("path")
-    .data([data2])
-    .attr("fill", "#aaccbd")
-    .attr("stroke", "#000000")
-    .attr("class", "area")
-    .attr("transform",
-          "translate(" + (margin.left + 1) + "," + (margin.top) + ")")
-    .attr("d", area);
+   .data([data2])
+   .attr("fill", "#aaccbd")
+   .attr("stroke", "#000000")
+   .attr("class", "area")
+   .attr("transform",
+         "translate(" + (margin.left + 1) + "," + (margin.top) + ")")
+   .attr("d", area);
 
-  // Add the data points
-  svg.selectAll("dot")
-     .data(data)
-     .enter()
-     .append("circle")
-     .attr("fill", "#69b3a2")
-     .attr("stroke", "black")
-     .attr("r", 3.5)
-     .attr("cx", function(d) { return x(d.valued_at); })
-     .attr("cy", function(d) { return y(d.value); })
-     .attr("transform",
-           "translate(" + (margin.left) + "," + (margin.top) + ")")
-     .append("svg:title")
-       .text(function(d) { return formatCLP(d.value); })
 
   // Add the data points
   svg.selectAll("dot")
@@ -129,7 +115,20 @@ export const makeStackedArea = (svg, dati) => {
     .append("svg:title")
       .text(function(d) { return formatCLP(d.value); })
 
-
+      // Add the data points
+      svg.selectAll("dot")
+         .data(data)
+         .enter()
+         .append("circle")
+         .attr("fill", "#69b3a2")
+         .attr("stroke", "black")
+         .attr("r", 3.5)
+         .attr("cx", function(d) { return x(d.valued_at); })
+         .attr("cy", function(d) { return y(d.value); })
+         .attr("transform",
+               "translate(" + (margin.left) + "," + (margin.top) + ")")
+         .append("svg:title")
+           .text(function(d) { return formatCLP(d.value); })
 
 
   }

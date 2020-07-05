@@ -8,11 +8,12 @@ from api.serializers import TransactionSerializer
 from backend import models
 
 
-def exchange(amount, origin, target):
+def exchange(amount, origin, target, when):
     if origin == target:
         return amount
     rates = models.ExchangeRate.objects.filter(
-        target__code=target
+        target__code=target,
+        valued_at__lte=when,
     ).order_by(
         'origin__code', 'target__code', '-valued_at'
     ).distinct(
