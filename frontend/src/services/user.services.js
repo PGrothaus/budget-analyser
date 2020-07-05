@@ -1,7 +1,10 @@
 import axios from 'axios';
 import authHeader from './auth-header';
 
-const API_URL = 'http://ec2-18-222-140-19.us-east-2.compute.amazonaws.com:8000/api/';
+const TARGET_ENV = process.env["REACT_APP_TARGET_ENV"];
+
+const API_URL = TARGET_ENV === "PRODUCTION" ? process.env["REACT_APP_API_URL_PROD"] : process.env["REACT_APP_API_URL_DEV"];
+console.log(API_URL);
 
 class UserService {
 

@@ -1,6 +1,10 @@
 import axios from "axios";
+console.log(process.env);
 
-const API_URL = "http://127.0.0.1:8000/api/";
+const TARGET_ENV = process.env["REACT_APP_TARGET_ENV"];
+
+const API_URL = TARGET_ENV === "PRODUCTION" ? process.env["REACT_APP_API_URL_PROD"] : process.env["REACT_APP_API_URL_DEV"];
+console.log(API_URL);
 
 class AuthService {
   login(email, password) {
