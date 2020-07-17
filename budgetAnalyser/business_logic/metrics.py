@@ -189,6 +189,8 @@ def account_value_to_target_currency(
 
 
 def get_all_exchange_rates(target_code, when):
+    if not when:
+        when = datetime.utcnow()
     return ExchangeRate.objects.filter(
         target__code=target_code,
         valued_at__lte=when,

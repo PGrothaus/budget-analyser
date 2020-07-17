@@ -58,7 +58,7 @@ class BancoEdwardsCCTEParsingTestCase(unittest.TestCase):
 
     def test_second_transaction_has_correct_transaction_id(self):
         trans = list(self.transactions)[1]
-        print(trans["transaction_id"])
+        print("parsing ccte", trans["transaction_id"])
         assert trans["transaction_id"] == 1220200543416050
 
     def test_second_transaction_has_correct_description(self):
@@ -100,22 +100,22 @@ class BancoEdwardsTCNationalParsingTestCase(unittest.TestCase):
             "date": timezone.localize(datetime.datetime(2020, 4, 21, 12, 0, 0)).astimezone(pytz.utc),
         }
         trans = list(self.transactions)[0]
-        print(trans["transaction_id"])
+        print("parsing tc national 1", trans["transaction_id"])
         assert trans == expected
 
     def test_returns_second_transaction_correctly(self):
         expected = {
             "user_id": 1,
             "account_id": 2,
-            "transaction_id": 1220200387047095,
-            "description": "Hdi seguros pat santiago",
+            "transaction_id": 1220200398858661,
+            "description": "Hdi seguros pat compras",
             "amount": 10000,
             "currency": "CLP",
             "type": "expense",
             "date": timezone.localize(datetime.datetime(2020, 3, 26, 12, 0, 0)).astimezone(pytz.utc),
         }
         trans = list(self.transactions)[1]
-        print(trans["transaction_id"])
+        print("parsing tc national 2", trans["transaction_id"])
         assert trans == expected
 
 
@@ -139,12 +139,12 @@ class BancoEdwardsTCNoFacturadoParsingTestCase(unittest.TestCase):
 
     def test_first_transaction_has_correct_transaction_id(self):
         trans = list(self.transactions)[0]
-        print(trans["transaction_id"])
-        assert trans["transaction_id"] == 1220200595479723
+        print("parsing tc no facturado", trans["transaction_id"])
+        assert trans["transaction_id"] == 1220200514878615
 
     def test_first_transaction_has_correct_description(self):
         trans = list(self.transactions)[0]
-        assert trans["description"] == "Ekono los leones ii santiago"
+        assert trans["description"] == "Ekono los leones ii compras"
 
     def test_first_transaction_has_correct_amount(self):
         trans = list(self.transactions)[0]
@@ -156,7 +156,7 @@ class BancoEdwardsTCNoFacturadoParsingTestCase(unittest.TestCase):
 
     def test_first_transaction_has_correct_date(self):
         trans = list(self.transactions)[0]
-        print(trans["date"])
+        print("parsing tc non facturado", trans["date"])
         assert trans["date"] == timezone.localize(datetime.datetime(2020, 4, 30, 12, 0, 0)).astimezone(pytz.utc)
 
     def test_second_transaction_has_correct_user_id(self):
@@ -170,11 +170,11 @@ class BancoEdwardsTCNoFacturadoParsingTestCase(unittest.TestCase):
     def test_second_transaction_has_correct_transaction_id(self):
         trans = list(self.transactions)[1]
         print(trans["transaction_id"])
-        assert trans["transaction_id"] == 1220200510018664
+        assert trans["transaction_id"] == 1220200484757658
 
     def test_second_transaction_has_correct_description(self):
         trans = list(self.transactions)[1]
-        assert trans["description"] == "Almacen salinas facco santiago"
+        assert trans["description"] == "Almacen salinas facco compras"
 
     def test_second_transaction_has_correct_amount(self):
         trans = list(self.transactions)[1]
@@ -210,7 +210,7 @@ class ScotiabankCCTEParsingTestCase(unittest.TestCase):
 
     def test_first_transaction_has_correct_transaction_id(self):
         trans = list(self.transactions)[0]
-        print(trans["transaction_id"])
+        print("parsing scotiabank 1", trans["transaction_id"])
         assert trans["transaction_id"] == 1220200320248606
 
     def test_first_transaction_has_correct_description(self):
@@ -243,7 +243,7 @@ class ScotiabankCCTEParsingTestCase(unittest.TestCase):
 
     def test_second_transaction_has_correct_transaction_id(self):
         trans = list(self.transactions)[1]
-        print(trans["transaction_id"])
+        print("parsing scotiabank 2", trans["transaction_id"])
         assert trans["transaction_id"] == 1220200338855752
 
     def test_second_transaction_has_correct_description(self):
