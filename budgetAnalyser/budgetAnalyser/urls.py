@@ -58,6 +58,13 @@ urlpatterns += [
     name='investment_input')
 ]
 
+# schedule fintual data collection
+n_tasks = len(task_models.Task.objects.filter(task_name="business_logic.tasks.collect_fintual_data"))
+if n_tasks == 0:
+    print("scheduling fintual data collection")
+    tasks.collect_fintual_data(verbose_name="Collect Fintual Data",
+                               repeat=60*60*24)
+
 # schedule rate collection
 n_tasks = len(task_models.Task.objects.filter(task_name="business_logic.tasks.collect_all_exchange_rates"))
 if n_tasks == 0:

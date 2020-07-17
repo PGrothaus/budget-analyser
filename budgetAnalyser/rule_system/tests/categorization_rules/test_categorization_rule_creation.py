@@ -43,6 +43,7 @@ class ACategorisationRuleCreationView(TestCase):
             name="test-account",
             bank=self.bank,
             user=self.user,
+            type_id=2,
         )
         self.uploaded_file = UploadedFile.objects.create(
             user=self.user,
