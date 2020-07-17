@@ -2,6 +2,7 @@ import pytz
 from datetime import datetime
 
 from django.db import IntegrityError
+from django.db import transaction
 
 from . import helpers
 from . import parsers
@@ -32,7 +33,6 @@ def handle_transactions_upload(request):
 
     _apply_rules_to_uncategorized_transactions(request)
     all_trans = transactions_new + transactions_old
-    print(all_trans)
     firstTransaction = sorted(all_trans, key=lambda elem: elem["date"])[0]
     when = firstTransaction["date"]
     metrics.recalculate(request.user, "networth", when)
@@ -40,6 +40,7 @@ def handle_transactions_upload(request):
     metrics.recalculate(request.user, "retirement", when)
     metrics.update_savings_investments(request.user, when)
     metrics.update_retirement_investments(request.user, when)
+    print("Done")
 
 
 def handle_transaction_update(request, transaction):
@@ -108,7 +109,8 @@ def _add_exchange_rate(**kwargs):
 
 def _add_transaction(**kwargs):
     try:
-        Transaction.objects.create(**kwargs)
+        with transaction.atomic():
+            Transaction.objects.create(**kwargs)
         return True
     except IntegrityError as e:
         print("IntegrityError in Transaction detected")

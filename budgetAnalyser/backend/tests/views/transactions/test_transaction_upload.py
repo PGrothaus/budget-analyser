@@ -1,5 +1,6 @@
 import os
 import shutil
+import time
 
 from django.contrib.auth.models import AnonymousUser
 from django.http import Http404
@@ -33,6 +34,7 @@ class APostTransactionsBancoEdwardsCCTEUploadView(TestCase):
             name="test-account",
             bank=self.bank,
             user=self.user,
+            type_id=2,
         )
 
         self.other_user = MyUser.objects.create(
@@ -89,7 +91,6 @@ class APostTransactionsBancoEdwardsCCTEUploadView(TestCase):
         items = Transaction.objects.filter(user=self.user)
         assert len(items) == 2
 
-
     def test_user_cannot_add_transactions_to_other_users_account(self):
         self.client.logout()
         self.client.login(email="user2@gmail.com", password='abc')
@@ -129,6 +130,7 @@ class APostTransactionsBancoEdwardsTCUploadView(TestCase):
             name="test-account",
             bank=self.bank,
             user=self.user,
+            type_id=2,
         )
 
         self.client = Client(follow=True)
