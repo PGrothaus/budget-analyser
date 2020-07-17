@@ -51,10 +51,6 @@ class APostTransactionsBancoEdwardsCCTEUploadView(TestCase):
 
 
     def _upload_transactions(self):
-        """Make a post request to upload a json file containing transactions.
-
-        Note that this method runs asynchronously.
-        """
         with open(self.fp_transactions) as fp:
             self.response = self.client.post('/transactions/upload', {
                 'file': fp,
@@ -91,8 +87,7 @@ class APostTransactionsBancoEdwardsCCTEUploadView(TestCase):
         self._upload_transactions()
         items = Transaction.objects.filter(user=self.user)
         assert len(items) == 2
-        time.sleep(2)
-        self._upload_transactions
+        self._upload_transactions()
         items = Transaction.objects.filter(user=self.user)
         assert len(items) == 2
 
