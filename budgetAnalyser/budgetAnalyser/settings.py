@@ -67,7 +67,7 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'rule_system.apps.RuleSystemConfig',
     'business_logic.apps.BusinessLogicConfig',
-    'fintual.apps.FintualSystemConfig',
+    'fintual.apps.FintualConfig',
     'rest_framework',
     'background_task',
 ]

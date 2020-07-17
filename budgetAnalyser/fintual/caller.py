@@ -1,18 +1,19 @@
 import json
 import requests
 
-import secrets
+import fintual.secrets as secrets
 
 
-def get_goals_all_users():
+def get_user_goals(user):
     goals = []
-    for username in secrets.FINTUAL_USERS:
-        goals.extend(get_user_goals(username))
+    for username in secrets.FINTUAL_USERS[user.id]:
+        goals.extend(get_goals_of_fintual_user(username))
     for goal in goals:
         print(goal)
+    return goals
 
 
-def get_user_goals(username):
+def get_goals_of_fintual_user(username):
     token = get_token(username)
     goals = get_goals(username, token)
     return format_goals(username, goals)
@@ -51,7 +52,9 @@ def get_goals(username, token):
 
     response = requests.get('https://fintual.cl/api/goals', headers=headers, params=params)
     goals = json.loads(response.text)["data"]
+    print(goals)
     return [{
+        "name": datum["attributes"]["name"],
         "deposited": datum["attributes"]["deposited"],
         "value": datum["attributes"]["nav"]
     } for datum in goals]
@@ -65,4 +68,6 @@ def format_goals(username, goals):
 
 
 if "__main__" == __name__:
-    get_goals_all_users()
+    class User:
+        id = 1
+    get_user_goals(User())
