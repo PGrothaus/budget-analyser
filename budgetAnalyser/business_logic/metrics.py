@@ -51,10 +51,12 @@ def savings(user, when=None, to_currency="CLP"):
 
 
 def retirement_investments(user, when=None):
+    print('Calculate retirement investments from %s' % when)
     accs = get_all_retirement_accounts(user)
     total = 0
     for acc in accs:
         val = invested_money(acc, when)
+        print('Invested %s in account %s' % (val, acc.name))
         if val is None:
             continue
         total += val
@@ -86,7 +88,7 @@ def update_savings_investments(user, starting):
 
 
 def savings_investments(user, when=None, include_normal=False):
-    # print("Calc savings investments from %s" % when)
+    print("Calculate savings investments from %s" % when)
     accs = get_all_savings_accounts(user)
     total = 0
     for acc in accs:
@@ -102,7 +104,9 @@ def get_all_savings_accounts(user):
     return Account.objects.filter(user=user, type__type__in=["NORMAL", "INVESTMENT"])
 
 def get_all_retirement_accounts(user):
-    return Account.objects.filter(user=user, type__type__in=["RETIREMENT"])
+    accs = Account.objects.filter(user=user, type__type__in=["RETIREMENT"])
+    print("Retirement accounts:", [acc.name for acc in accs])
+    return accs
 
 def get_savings_account_values(user, when=None):
     return get_account_values(user, ["NORMAL", "INVESTMENT"], when)
