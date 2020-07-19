@@ -19,6 +19,7 @@ def recalculate(user, kind, starting):
         "networth": networth,
         "savings": savings,
         "retirement": retirement,
+        "retirement_investments": retirement_investments,
     }
     nws = NetWorth.objects.filter(
         type=kind,
