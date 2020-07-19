@@ -71,7 +71,7 @@ def calculate_savings_investments_all_users():
     user_ids = [1]
     for user_id in user_ids:
         user = MyUser.objects.get(pk=user_id)
-        nw = metrics.savings_investments(user)
+        nw = metrics.savings_investments(user, include_normal=True)
         models.NetWorth.objects.create(user=user,
                                        value=nw,
                                        valued_at=datetime.now(timezone.utc),

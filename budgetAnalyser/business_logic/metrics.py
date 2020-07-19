@@ -55,7 +55,7 @@ def retirement_investments(user, when=None):
     accs = get_all_retirement_accounts(user)
     total = 0
     for acc in accs:
-        val = invested_money(acc, when)
+        val = invested_money(acc, when=when)
         print('Invested %s in account %s' % (val, acc.name))
         if val is None:
             continue
@@ -72,6 +72,7 @@ def update_retirement_investments(user, starting):
     )
     for elem in elems:
         elem.value = retirement_investments(user, when=elem.valued_at)
+        print('Retirement investment at %s is %s' % (elem.valued_at, elem.value))
         elem.save()
 
 
