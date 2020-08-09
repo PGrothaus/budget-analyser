@@ -3,27 +3,29 @@
 from django.db import migrations
 
 
-CATEGORY_GROUPS = sorted([
-    ('Credits', 'expense'),
-], key=lambda elem: (elem[1], elem[0]))
+CATEGORY_GROUPS = sorted([("Credits", "expense"),], key=lambda elem: (elem[1], elem[0]))
 
-CATEGORIES = sorted([
-    ('Fuel', 'Transport'),
-    ('Other', 'Other Expenses'),
-    ('Online Services', 'Services'),
-    ('Flat', 'Credits')
-], key=lambda elem: (elem[1], elem[0]))
+CATEGORIES = sorted(
+    [
+        ("Fuel", "Transport"),
+        ("Other", "Other Expenses"),
+        ("Online Services", "Services"),
+        ("Flat", "Credits"),
+    ],
+    key=lambda elem: (elem[1], elem[0]),
+)
+
 
 def add_category_groups(apps, schema_editor):
-    CategoryGroup = apps.get_model('backend', 'CategoryGroup')
+    CategoryGroup = apps.get_model("backend", "CategoryGroup")
     for elem in CATEGORY_GROUPS:
         print(elem)
         CategoryGroup.objects.get_or_create(name=elem[0], type=elem[1])
 
 
 def add_categories(apps, schema_editor):
-    Category = apps.get_model('backend', 'Category')
-    CategoryGroup = apps.get_model('backend', 'CategoryGroup')
+    Category = apps.get_model("backend", "Category")
+    CategoryGroup = apps.get_model("backend", "CategoryGroup")
     for elem in CATEGORIES:
         print(elem)
         group = CategoryGroup.objects.get(name=elem[1])
@@ -35,7 +37,7 @@ def add_categories(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('backend', '0002_auto_20200505_2239'),
+        ("backend", "0002_auto_20200505_2239"),
     ]
 
     operations = [

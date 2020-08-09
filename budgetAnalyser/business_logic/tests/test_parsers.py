@@ -10,7 +10,6 @@ timezone = pytz.timezone("Chile/Continental")
 
 
 class BancoEdwardsCCTEParsingTestCase(unittest.TestCase):
-
     def setUp(self):
         fp = "backend/tests/data/transactions.banco_edwards.json"
         base_repr = {"user_id": 1, "account_id": 2}
@@ -46,7 +45,9 @@ class BancoEdwardsCCTEParsingTestCase(unittest.TestCase):
 
     def test_first_transaction_has_correct_date(self):
         trans = list(self.transactions)[0]
-        assert trans["date"] == timezone.localize(datetime.datetime(2020, 4, 15, 16, 54, 11)).astimezone(pytz.utc)
+        assert trans["date"] == timezone.localize(
+            datetime.datetime(2020, 4, 15, 16, 54, 11)
+        ).astimezone(pytz.utc)
 
     def test_second_transaction_has_correct_user_id(self):
         trans = list(self.transactions)[1]
@@ -75,11 +76,12 @@ class BancoEdwardsCCTEParsingTestCase(unittest.TestCase):
 
     def test_second_transaction_has_correct_date(self):
         trans = list(self.transactions)[1]
-        assert trans["date"] == timezone.localize(datetime.datetime(2020, 4, 14, 1, 24, 49)).astimezone(pytz.utc)
+        assert trans["date"] == timezone.localize(
+            datetime.datetime(2020, 4, 14, 1, 24, 49)
+        ).astimezone(pytz.utc)
 
 
 class BancoEdwardsTCNationalParsingTestCase(unittest.TestCase):
-
     def setUp(self):
         fp = "backend/tests/data/transactions.banco_edwards.tc_national.json"
         base_repr = {"user_id": 1, "account_id": 2}
@@ -97,7 +99,9 @@ class BancoEdwardsTCNationalParsingTestCase(unittest.TestCase):
             "amount": 1234.0,
             "currency": "CLP",
             "type": "expense",
-            "date": timezone.localize(datetime.datetime(2020, 4, 21, 12, 0, 0)).astimezone(pytz.utc),
+            "date": timezone.localize(
+                datetime.datetime(2020, 4, 21, 12, 0, 0)
+            ).astimezone(pytz.utc),
         }
         trans = list(self.transactions)[0]
         print("parsing tc national 1", trans["transaction_id"])
@@ -112,7 +116,9 @@ class BancoEdwardsTCNationalParsingTestCase(unittest.TestCase):
             "amount": 10000,
             "currency": "CLP",
             "type": "expense",
-            "date": timezone.localize(datetime.datetime(2020, 3, 26, 12, 0, 0)).astimezone(pytz.utc),
+            "date": timezone.localize(
+                datetime.datetime(2020, 3, 26, 12, 0, 0)
+            ).astimezone(pytz.utc),
         }
         trans = list(self.transactions)[1]
         print("parsing tc national 2", trans["transaction_id"])
@@ -120,7 +126,6 @@ class BancoEdwardsTCNationalParsingTestCase(unittest.TestCase):
 
 
 class BancoEdwardsTCNoFacturadoParsingTestCase(unittest.TestCase):
-
     def setUp(self):
         fp = "backend/tests/data/transactions.tc.no_facturado.json"
         base_repr = {"user_id": 1, "account_id": 2}
@@ -157,7 +162,9 @@ class BancoEdwardsTCNoFacturadoParsingTestCase(unittest.TestCase):
     def test_first_transaction_has_correct_date(self):
         trans = list(self.transactions)[0]
         print("parsing tc non facturado", trans["date"])
-        assert trans["date"] == timezone.localize(datetime.datetime(2020, 4, 30, 12, 0, 0)).astimezone(pytz.utc)
+        assert trans["date"] == timezone.localize(
+            datetime.datetime(2020, 4, 30, 12, 0, 0)
+        ).astimezone(pytz.utc)
 
     def test_second_transaction_has_correct_user_id(self):
         trans = list(self.transactions)[1]
@@ -187,11 +194,12 @@ class BancoEdwardsTCNoFacturadoParsingTestCase(unittest.TestCase):
     def test_second_transaction_has_correct_date(self):
         trans = list(self.transactions)[1]
         print(trans["date"])
-        assert trans["date"] == timezone.localize(datetime.datetime(2020, 4, 30, 12, 0, 0)).astimezone(pytz.utc)
+        assert trans["date"] == timezone.localize(
+            datetime.datetime(2020, 4, 30, 12, 0, 0)
+        ).astimezone(pytz.utc)
 
 
 class ScotiabankCCTEParsingTestCase(unittest.TestCase):
-
     def setUp(self):
         fp = "backend/tests/data/transactions.scotiabank.json"
         base_repr = {"user_id": 1, "account_id": 2}
@@ -231,7 +239,9 @@ class ScotiabankCCTEParsingTestCase(unittest.TestCase):
 
     def test_first_transaction_has_correct_date(self):
         trans = list(self.transactions)[0]
-        assert trans["date"] == timezone.localize(datetime.datetime(2020, 1, 28, 12, 0, 0)).astimezone(pytz.utc)
+        assert trans["date"] == timezone.localize(
+            datetime.datetime(2020, 1, 28, 12, 0, 0)
+        ).astimezone(pytz.utc)
 
     def test_second_transaction_has_correct_user_id(self):
         trans = list(self.transactions)[1]
@@ -264,4 +274,6 @@ class ScotiabankCCTEParsingTestCase(unittest.TestCase):
 
     def test_second_transaction_has_correct_date(self):
         trans = list(self.transactions)[1]
-        assert trans["date"] == timezone.localize(datetime.datetime(2020, 1, 28, 12, 0, 0)).astimezone(pytz.utc)
+        assert trans["date"] == timezone.localize(
+            datetime.datetime(2020, 1, 28, 12, 0, 0)
+        ).astimezone(pytz.utc)

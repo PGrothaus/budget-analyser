@@ -17,31 +17,27 @@ from business_logic import metrics
 
 
 class CurrencySerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Currency
-        fields = ['id', 'code', 'name']
+        fields = ["id", "code", "name"]
 
 
 class ExchangeRateSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = ExchangeRate
-        fields = ['id', 'origin', 'target', 'rate', 'valued_at']
+        fields = ["id", "origin", "target", "rate", "valued_at"]
 
 
 class BankSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Bank
-        fields = ['id', 'name']
+        fields = ["id", "name"]
 
 
 class AccountTypeSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = AccountType
-        fields = ['type']
+        fields = ["type"]
 
 
 class AccountSerializer(serializers.ModelSerializer):
@@ -51,20 +47,20 @@ class AccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ['id', 'name', 'bank', 'currency', 'type']
+        fields = ["id", "name", "bank", "currency", "type"]
         depth = 0
 
 
 class AccountValueSerializer(serializers.ModelSerializer):
     account = AccountSerializer()
-    invested_money = serializers.SerializerMethodField('calc_invested_money')
+    invested_money = serializers.SerializerMethodField("calc_invested_money")
 
     def calc_invested_money(self, obj):
         return metrics.invested_money(obj.account)
 
     class Meta:
         model = AccountValue
-        fields = ['account', 'valued_at', 'value', 'invested_money']
+        fields = ["account", "valued_at", "value", "invested_money"]
 
 
 class AssetSerializer(serializers.ModelSerializer):
@@ -73,29 +69,26 @@ class AssetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Asset
-        fields = ['name', 'type', 'currency', 'associated_credit', 'cost']
+        fields = ["name", "type", "currency", "associated_credit", "cost"]
 
 
 class AssetValueSerializer(serializers.ModelSerializer):
     asset = AssetSerializer()
-    remaining_cost = serializers.SerializerMethodField('calc_remaining_cost')
+    remaining_cost = serializers.SerializerMethodField("calc_remaining_cost")
 
     def calc_remaining_cost(self, obj):
         associated_credit = obj.asset.associated_credit
         if associated_credit:
             val = AccountValue.objects.filter(
-                    account__id=associated_credit.id
-                ).order_by(
-                    '-valued_at'
-                )[0]
+                account__id=associated_credit.id
+            ).order_by("-valued_at")[0]
             print("remaining credit value", val)
             return val.value
-        return 100.
-
+        return 100.0
 
     class Meta:
         model = AssetValue
-        fields = ['asset', 'valued_at', 'value', 'remaining_cost']
+        fields = ["asset", "valued_at", "value", "remaining_cost"]
 
 
 class TransactionSerializer(serializers.ModelSerializer):
@@ -103,26 +96,23 @@ class TransactionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Transaction
-        fields = ['id',
-                  'description',
-                  'amount',
-                  'currency',
-                  'type',
-                  'date',
-                  'category',
-                  'account_id',
-                  'total',
-                  ]
+        fields = [
+            "id",
+            "description",
+            "amount",
+            "currency",
+            "type",
+            "date",
+            "category",
+            "account_id",
+            "total",
+        ]
         depth = 2
 
 
 class GroupedExpensesSerializer(serializers.BaseSerializer):
-
     def to_representation(self, data):
-        return {
-            'category': data["category__group__name"],
-            'total': data["total"]
-        }
+        return {"category": data["category__group__name"], "total": data["total"]}
 
 
 class NetworthSerializer(serializers.ModelSerializer):
@@ -130,21 +120,15 @@ class NetworthSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = NetWorth
-        fields = ['id',
-                  'valued_at',
-                  'value']
+        fields = ["id", "valued_at", "value"]
 
 
 class AggregateSerializer(serializers.BaseSerializer):
-
     def to_representation(self, data):
-        return {
-            'total': data["total"]
-        }
+        return {"total": data["total"]}
 
 
 class MonthwiseSerializer(serializers.BaseSerializer):
-
     def to_representation(self, data):
         print(data)
         return data

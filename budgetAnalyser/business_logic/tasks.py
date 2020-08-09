@@ -16,10 +16,9 @@ def calculate_networth_all_users():
     for user_id in user_ids:
         user = MyUser.objects.get(pk=user_id)
         nw = metrics.networth(user)
-        models.NetWorth.objects.create(user=user,
-                                       value=nw,
-                                       valued_at=datetime.now(timezone.utc),
-                                       type="networth")
+        models.NetWorth.objects.create(
+            user=user, value=nw, valued_at=datetime.now(timezone.utc), type="networth"
+        )
         print("NetWorth for user %s is %s" % (user_id, nw))
 
 
@@ -30,10 +29,9 @@ def calculate_total_retirement_all_users():
     for user_id in user_ids:
         user = MyUser.objects.get(pk=user_id)
         nw = metrics.retirement(user)
-        models.NetWorth.objects.create(user=user,
-                                       value=nw,
-                                       valued_at=datetime.now(timezone.utc),
-                                       type="retirement")
+        models.NetWorth.objects.create(
+            user=user, value=nw, valued_at=datetime.now(timezone.utc), type="retirement"
+        )
         print("Total Retirement for user %s is %s" % (user_id, nw))
 
 
@@ -44,10 +42,12 @@ def calculate_total_retirement_investments_all_users():
     for user_id in user_ids:
         user = MyUser.objects.get(pk=user_id)
         nw = metrics.retirement_investments(user)
-        models.NetWorth.objects.create(user=user,
-                                       value=nw,
-                                       valued_at=datetime.now(timezone.utc),
-                                       type="retirement_investment")
+        models.NetWorth.objects.create(
+            user=user,
+            value=nw,
+            valued_at=datetime.now(timezone.utc),
+            type="retirement_investment",
+        )
         print("Total Retirement Investment for user %s is %s" % (user_id, nw))
 
 
@@ -58,10 +58,9 @@ def calculate_savings_all_users():
     for user_id in user_ids:
         user = MyUser.objects.get(pk=user_id)
         nw = metrics.savings(user)
-        models.NetWorth.objects.create(user=user,
-                                       value=nw,
-                                       valued_at=datetime.now(timezone.utc),
-                                       type="savings")
+        models.NetWorth.objects.create(
+            user=user, value=nw, valued_at=datetime.now(timezone.utc), type="savings"
+        )
         print("All Savings for user %s is %s" % (user_id, nw))
 
 
@@ -72,10 +71,12 @@ def calculate_savings_investments_all_users():
     for user_id in user_ids:
         user = MyUser.objects.get(pk=user_id)
         nw = metrics.savings_investments(user, include_normal=True)
-        models.NetWorth.objects.create(user=user,
-                                       value=nw,
-                                       valued_at=datetime.now(timezone.utc),
-                                       type="savings_investment")
+        models.NetWorth.objects.create(
+            user=user,
+            value=nw,
+            valued_at=datetime.now(timezone.utc),
+            type="savings_investment",
+        )
         print("All Savings Investment for user %s is %s" % (user_id, nw))
 
 
@@ -93,15 +94,9 @@ def collect_fintual_data():
         user = MyUser.objects.get(pk=user_id)
         goals = fintual.get_user_goals(user)
         for goal in goals:
-            acc = models.Account.objects.get(
-                user=user,
-                name=goal["name"],
-            )
+            acc = models.Account.objects.get(user=user, name=goal["name"],)
             value = goal["value"]
             valued_at = datetime.now(timezone.utc)
             models.AccountValue.objects.create(
-                user=user,
-                account=acc,
-                value=value,
-                valued_at=valued_at,
+                user=user, account=acc, value=value, valued_at=valued_at,
             )

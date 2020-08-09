@@ -3,11 +3,11 @@
 from django.db import migrations
 
 
-ACCOUNTTYPES = ['RETIREMENT', 'NORMAL', 'INVESTMENT', 'CREDIT']
+ACCOUNTTYPES = ["RETIREMENT", "NORMAL", "INVESTMENT", "CREDIT"]
 
 
 def add_currencies(apps, schema_editor):
-    AccountType = apps.get_model('backend', 'AccountType')
+    AccountType = apps.get_model("backend", "AccountType")
     for elem in ACCOUNTTYPES:
         print(elem)
         AccountType.objects.get_or_create(type=elem)
@@ -16,7 +16,7 @@ def add_currencies(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('backend', '0007_auto_20200530_1749'),
+        ("backend", "0007_auto_20200530_1749"),
     ]
 
     operations = [

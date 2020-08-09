@@ -9,8 +9,6 @@ from .models import ExchangeRate
 from .models import Transaction
 
 
-
-
 class UploadTransactionsForm(forms.Form):
 
     file = forms.FileField()
@@ -19,8 +17,10 @@ class UploadTransactionsForm(forms.Form):
 
     def __init__(self, user, *args, **kwargs):
         super(UploadTransactionsForm, self).__init__(*args, **kwargs)
-        self.fields['bank'].queryset = Bank.objects.filter(user=user).order_by('name')
-        self.fields['account'].queryset = Account.objects.filter(user=user, type=2).order_by('bank__name', 'name')
+        self.fields["bank"].queryset = Bank.objects.filter(user=user).order_by("name")
+        self.fields["account"].queryset = Account.objects.filter(
+            user=user, type=2
+        ).order_by("bank__name", "name")
 
 
 class InvestmentForm(forms.Form):
@@ -33,4 +33,6 @@ class InvestmentForm(forms.Form):
 
     def __init__(self, user, *args, **kwargs):
         super(InvestmentForm, self).__init__(*args, **kwargs)
-        self.fields['account'].queryset = Account.objects.filter(user=user, type__in=[1, 3]).order_by('bank__name', 'name')
+        self.fields["account"].queryset = Account.objects.filter(
+            user=user, type__in=[1, 3]
+        ).order_by("bank__name", "name")

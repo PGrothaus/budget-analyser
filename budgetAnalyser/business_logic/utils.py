@@ -33,10 +33,9 @@ def create_categorisation_rule(request, transaction):
     jdata = json.dumps(rule)
     date = str(helpers.datetime_to_integer(datetime.now()))
     name = "{}:{}".format(cat.name, date)
-    return CategorizationRule.objects.create(name=name,
-                                             rule=jdata,
-                                             user=request.user,
-                                             effect_value=cat)
+    return CategorizationRule.objects.create(
+        name=name, rule=jdata, user=request.user, effect_value=cat
+    )
 
 
 def create_missing_dirs(filepath):
@@ -48,7 +47,7 @@ def create_missing_dirs(filepath):
 
 def save_uploaded_file(filepath, file):
     create_missing_dirs(filepath)
-    with open(filepath, 'wb+') as destination:
+    with open(filepath, "wb+") as destination:
         print("Save uploaded file at", filepath)
         for chunk in file.chunks():
             destination.write(chunk)

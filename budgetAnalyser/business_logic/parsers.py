@@ -9,6 +9,7 @@ from business_logic import helpers
 
 timezone = pytz.timezone("Chile/Continental")
 
+
 def parse_banco_edwards_ccte(jdata):
     return jdata["movimientos"]
 
@@ -43,7 +44,9 @@ def parse_transaction_banco_edwards_tc_national(datum, base_repr):
     base_repr["amount"] = datum["montoTransaccion"]
     base_repr["currency"] = "CLP"
     base_repr["type"] = _format_transaction_type(datum["grupo"])
-    base_repr["date"] = _format_transaction_date(datum["fechaTransaccionString"], fix_time_of_day=True)
+    base_repr["date"] = _format_transaction_date(
+        datum["fechaTransaccionString"], fix_time_of_day=True
+    )
     base_repr["transaction_id"] = helpers.build_transaction_id(base_repr)
     return base_repr
 
@@ -55,7 +58,10 @@ def parse_transaction_banco_edwards_tc_national_no_facturado(datum, base_repr):
     base_repr["amount"] = datum["montoCompra"]
     base_repr["currency"] = "CLP"
     base_repr["type"] = "expense"
-    base_repr["date"] = _format_transaction_date(" ".join([datum["fechaTransaccionString"], datum["horaAutorizacion"]]), fix_time_of_day=True)
+    base_repr["date"] = _format_transaction_date(
+        " ".join([datum["fechaTransaccionString"], datum["horaAutorizacion"]]),
+        fix_time_of_day=True,
+    )
     base_repr["transaction_id"] = helpers.build_transaction_id(base_repr)
     return base_repr
 
@@ -66,7 +72,9 @@ def parse_transaction_bbva_ccte(datum, base_repr):
     base_repr["currency"] = "CLP"
     base_repr["type"] = _format_transaction_type(datum["tipomov"])
     base_repr["date"] = _format_transaction_date(datum["fecmovfmt"])
-    base_repr["transaction_id"] = helpers.build_transaction_id(base_repr, datum["numdoc"])
+    base_repr["transaction_id"] = helpers.build_transaction_id(
+        base_repr, datum["numdoc"]
+    )
     base_repr["new_account_value"] = _format_amount(datum["saldolin"])
     return base_repr
 
@@ -75,7 +83,7 @@ AVAILABLE_FILE_PARSERS = {
     "banco_edwards_ccte": parse_banco_edwards_ccte,
     "banco_edwards_tc_national": parse_banco_edwards_tc_national,
     "banco_edwards_tc_national_no_facturado": parse_banco_edwards_tc_national_no_facturado,
-#    "banco_edwards_tc_international": parse_banco_edwards_tc_international,
+    #    "banco_edwards_tc_international": parse_banco_edwards_tc_international,
     "bbva_ccte": parse_bbva_ccte,
 }
 
@@ -84,7 +92,7 @@ AVAILABLE_TRANSACTION_PARSERS = {
     "banco_edwards_ccte": parse_transaction_banco_edwards_ccte,
     "banco_edwards_tc_national": parse_transaction_banco_edwards_tc_national,
     "banco_edwards_tc_national_no_facturado": parse_transaction_banco_edwards_tc_national_no_facturado,
-#    "banco_edwards_tc_international": parse_transaction_banco_edwards_tc_international,
+    #    "banco_edwards_tc_international": parse_transaction_banco_edwards_tc_international,
     "bbva_ccte": parse_transaction_bbva_ccte,
 }
 
@@ -136,7 +144,9 @@ def _format_transaction_date(dateinfo, fix_time_of_day=False):
     if fix_time_of_day:
         time = "12:00:00"
     date = "{}-{}-{}".format(date[:4], date[4:6], date[6:])
-    return timezone.localize(datetime.strptime(" ".join([date, time]), "%Y-%m-%d %H:%M:%S")).astimezone(pytz.utc)
+    return timezone.localize(
+        datetime.strptime(" ".join([date, time]), "%Y-%m-%d %H:%M:%S")
+    ).astimezone(pytz.utc)
 
 
 def _format_amount(amount):
@@ -145,14 +155,15 @@ def _format_amount(amount):
 
 
 def _format_transaction_type(type):
-    type_formats = {"cargo": "expense",
-                    "abono": "income",
-                    "pagos": "expense",
-                    "avancesCompras": "expense",
-                    "A": "income",
-                    "B": "expense",
-                    "C": "expense",
-                    }
+    type_formats = {
+        "cargo": "expense",
+        "abono": "income",
+        "pagos": "expense",
+        "avancesCompras": "expense",
+        "A": "income",
+        "B": "expense",
+        "C": "expense",
+    }
     return type_formats[type]
 
 
@@ -163,7 +174,7 @@ def _format_transaction_datum(datum, file_key, base_repr):
 def _format_description(description):
     description = " ".join(description.split())
     description = description.lower()
-    description = description.replace('santiago', 'compras')
+    description = description.replace("santiago", "compras")
     description = description.capitalize()
     return description
 

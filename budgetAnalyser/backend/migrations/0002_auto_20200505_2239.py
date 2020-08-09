@@ -3,75 +3,82 @@
 from django.db import migrations
 
 
-CATEGORY_GROUPS = sorted([
-    ('Entertainment', 'expense'),
-    ('Food', 'expense'),
-    ('Health', 'expense'),
-    ('Insurances', 'expense'),
-    ('Purchases', 'expense'),
-    ('Services', 'expense'),
-    ('Sport', 'expense'),
-    ('Transport', 'expense'),
-    ('Other Expenses', 'expense'),
-    ('Investment Yield', 'income'),
-    ('Reimbursement', 'income'),
-    ('Salary', 'income'),
-    ('Neutral', 'neutral'),
-], key=lambda elem: (elem[1], elem[0]))
+CATEGORY_GROUPS = sorted(
+    [
+        ("Entertainment", "expense"),
+        ("Food", "expense"),
+        ("Health", "expense"),
+        ("Insurances", "expense"),
+        ("Purchases", "expense"),
+        ("Services", "expense"),
+        ("Sport", "expense"),
+        ("Transport", "expense"),
+        ("Other Expenses", "expense"),
+        ("Investment Yield", "income"),
+        ("Reimbursement", "income"),
+        ("Salary", "income"),
+        ("Neutral", "neutral"),
+    ],
+    key=lambda elem: (elem[1], elem[0]),
+)
 
-CATEGORIES = sorted([
-    ('Toll', 'Transport'),
-    ('Car Maintenance', 'Transport'),
-    ('Tenis', 'Sport'),
-    ('Fitness', 'Sport'),
-    ('Swimming', 'Sport'),
-    ('Other Sport', 'Sport'),
-    ('Household', 'Services'),
-    ('Internet', 'Services'),
-    ('Banking Fees', 'Services'),
-    ('Water', 'Services'),
-    ('Gas', 'Services'),
-    ('Electricity', 'Services'),
-    ('Building Expenses', 'Services'),
-    ('Restaurant', 'Entertainment'),
-    ('Bar', 'Entertainment'),
-    ('Café', 'Entertainment'),
-    ('Taxes', 'Services'),
-    ('Interest Payment', 'Services'),
-    ('Cinema', 'Entertainment'),
-    ('Party', 'Entertainment'),
-    ('Supermarket', 'Food'),
-    ('Fruit Store', 'Food'),
-    ('Mini Market', 'Food'),
-    ('Cornershop App', 'Food'),
-    ('Cash', 'Other Expenses'),
-    ('Internal Transaction', 'Neutral'),
-    ('Any Salary', 'Salary'),
-    ('Any Reimbursement', 'Reimbursement'),
-    ('Any Investment Yield', 'Investment Yield'),
-    ('Pharmacy', 'Health'),
-    ('Doctor', 'Health'),
-    ('Dentist', 'Health'),
-    ('Car Insurance', 'Insurances'),
-    ('Technology', 'Purchases'),
-    ('Sport Material', 'Purchases'),
-    ('Home', 'Purchases'),
-    ('Books', 'Purchases'),
-    ('Kids Related', 'Purchases'),
-    ('Presents', 'Purchases'),
-    ('Mobile Phone', 'Services'),
-], key=lambda elem: (elem[1], elem[0]))
+CATEGORIES = sorted(
+    [
+        ("Toll", "Transport"),
+        ("Car Maintenance", "Transport"),
+        ("Tenis", "Sport"),
+        ("Fitness", "Sport"),
+        ("Swimming", "Sport"),
+        ("Other Sport", "Sport"),
+        ("Household", "Services"),
+        ("Internet", "Services"),
+        ("Banking Fees", "Services"),
+        ("Water", "Services"),
+        ("Gas", "Services"),
+        ("Electricity", "Services"),
+        ("Building Expenses", "Services"),
+        ("Restaurant", "Entertainment"),
+        ("Bar", "Entertainment"),
+        ("Café", "Entertainment"),
+        ("Taxes", "Services"),
+        ("Interest Payment", "Services"),
+        ("Cinema", "Entertainment"),
+        ("Party", "Entertainment"),
+        ("Supermarket", "Food"),
+        ("Fruit Store", "Food"),
+        ("Mini Market", "Food"),
+        ("Cornershop App", "Food"),
+        ("Cash", "Other Expenses"),
+        ("Internal Transaction", "Neutral"),
+        ("Any Salary", "Salary"),
+        ("Any Reimbursement", "Reimbursement"),
+        ("Any Investment Yield", "Investment Yield"),
+        ("Pharmacy", "Health"),
+        ("Doctor", "Health"),
+        ("Dentist", "Health"),
+        ("Car Insurance", "Insurances"),
+        ("Technology", "Purchases"),
+        ("Sport Material", "Purchases"),
+        ("Home", "Purchases"),
+        ("Books", "Purchases"),
+        ("Kids Related", "Purchases"),
+        ("Presents", "Purchases"),
+        ("Mobile Phone", "Services"),
+    ],
+    key=lambda elem: (elem[1], elem[0]),
+)
+
 
 def add_category_groups(apps, schema_editor):
-    CategoryGroup = apps.get_model('backend', 'CategoryGroup')
+    CategoryGroup = apps.get_model("backend", "CategoryGroup")
     for elem in CATEGORY_GROUPS:
         print(elem)
         CategoryGroup.objects.get_or_create(name=elem[0], type=elem[1])
 
 
 def add_categories(apps, schema_editor):
-    Category = apps.get_model('backend', 'Category')
-    CategoryGroup = apps.get_model('backend', 'CategoryGroup')
+    Category = apps.get_model("backend", "Category")
+    CategoryGroup = apps.get_model("backend", "CategoryGroup")
     for elem in CATEGORIES:
         print(elem)
         group = CategoryGroup.objects.get(name=elem[1])
@@ -83,7 +90,7 @@ def add_categories(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('backend', '0001_initial'),
+        ("backend", "0001_initial"),
     ]
 
     operations = [

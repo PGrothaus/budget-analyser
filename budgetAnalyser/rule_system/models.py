@@ -14,9 +14,10 @@ class Rule(models.Model):
     class Meta:
         abstract = True
         constraints = [
-            models.UniqueConstraint(fields=['user_id', 'name'],
-            name='unique_rule_name_per_user')
-            ]
+            models.UniqueConstraint(
+                fields=["user_id", "name"], name="unique_rule_name_per_user"
+            )
+        ]
 
     def __str__(self):
         return self.name

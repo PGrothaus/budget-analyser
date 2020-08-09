@@ -9,21 +9,38 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('backend', '0011_asset_cost'),
+        ("backend", "0011_asset_cost"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='NetWorth',
+            name="NetWorth",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('valued_at', models.DateTimeField()),
-                ('value', models.FloatField()),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("valued_at", models.DateTimeField()),
+                ("value", models.FloatField()),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.AddConstraint(
-            model_name='networth',
-            constraint=models.UniqueConstraint(fields=('user_id', 'valued_at'), name='unique_networth_per_moment_in_time'),
+            model_name="networth",
+            constraint=models.UniqueConstraint(
+                fields=("user_id", "valued_at"),
+                name="unique_networth_per_moment_in_time",
+            ),
         ),
     ]

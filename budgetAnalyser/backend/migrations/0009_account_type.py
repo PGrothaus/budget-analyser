@@ -7,14 +7,18 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('backend', '0008_auto_20200530_1751'),
+        ("backend", "0008_auto_20200530_1751"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='account',
-            name='type',
-            field=models.ForeignKey(default=2, on_delete=django.db.models.deletion.CASCADE, to='backend.AccountType'),
+            model_name="account",
+            name="type",
+            field=models.ForeignKey(
+                default=2,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="backend.AccountType",
+            ),
             preserve_default=False,
         ),
     ]

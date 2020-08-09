@@ -9,37 +9,89 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('backend', '0009_account_type'),
+        ("backend", "0009_account_type"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Asset',
+            name="Asset",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=20)),
-                ('type', models.CharField(max_length=20)),
-                ('associated_credit', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='backend.Account')),
-                ('currency', models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='backend.Currency')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=20)),
+                ("type", models.CharField(max_length=20)),
+                (
+                    "associated_credit",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="backend.Account",
+                    ),
+                ),
+                (
+                    "currency",
+                    models.ForeignKey(
+                        default=1,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="backend.Currency",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='AssetValue',
+            name="AssetValue",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('value', models.FloatField()),
-                ('valued_at', models.DateTimeField()),
-                ('asset', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='backend.Asset')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("value", models.FloatField()),
+                ("valued_at", models.DateTimeField()),
+                (
+                    "asset",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="backend.Asset"
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.AddIndex(
-            model_name='assetvalue',
-            index=models.Index(fields=['asset', '-valued_at'], name='backend_ass_asset_i_753cdf_idx'),
+            model_name="assetvalue",
+            index=models.Index(
+                fields=["asset", "-valued_at"], name="backend_ass_asset_i_753cdf_idx"
+            ),
         ),
         migrations.AddConstraint(
-            model_name='asset',
-            constraint=models.UniqueConstraint(fields=('user_id', 'name'), name='unique_asset_name_per_user'),
+            model_name="asset",
+            constraint=models.UniqueConstraint(
+                fields=("user_id", "name"), name="unique_asset_name_per_user"
+            ),
         ),
     ]

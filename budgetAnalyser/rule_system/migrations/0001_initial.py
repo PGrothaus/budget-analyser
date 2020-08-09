@@ -12,25 +12,45 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('backend', '0001_initial'),
+        ("backend", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='CategorizationRule',
+            name="CategorizationRule",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50)),
-                ('rule', django.contrib.postgres.fields.jsonb.JSONField()),
-                ('effect_value', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='backend.Category')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50)),
+                ("rule", django.contrib.postgres.fields.jsonb.JSONField()),
+                (
+                    "effect_value",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="backend.Category",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False,},
         ),
         migrations.AddConstraint(
-            model_name='categorizationrule',
-            constraint=models.UniqueConstraint(fields=('user_id', 'name'), name='unique_rule_name_per_user'),
+            model_name="categorizationrule",
+            constraint=models.UniqueConstraint(
+                fields=("user_id", "name"), name="unique_rule_name_per_user"
+            ),
         ),
     ]

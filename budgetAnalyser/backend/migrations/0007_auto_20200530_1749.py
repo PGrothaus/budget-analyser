@@ -6,20 +6,26 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('backend', '0006_account_currency'),
+        ("backend", "0006_account_currency"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='AccountType',
+            name="AccountType",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('type', models.CharField(max_length=20)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("type", models.CharField(max_length=20)),
             ],
         ),
         migrations.AlterField(
-            model_name='currency',
-            name='code',
-            field=models.CharField(max_length=10),
+            model_name="currency", name="code", field=models.CharField(max_length=10),
         ),
     ]

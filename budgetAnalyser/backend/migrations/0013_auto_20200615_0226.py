@@ -6,12 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('backend', '0012_auto_20200615_0054'),
+        ("backend", "0012_auto_20200615_0054"),
     ]
 
     operations = [
         migrations.AddIndex(
-            model_name='networth',
-            index=models.Index(fields=['user_id', '-valued_at'], name='backend_net_user_id_8236c0_idx'),
+            model_name="networth",
+            index=models.Index(
+                fields=["user_id", "-valued_at"], name="backend_net_user_id_8236c0_idx"
+            ),
         ),
     ]

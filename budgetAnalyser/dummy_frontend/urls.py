@@ -3,4 +3,4 @@ from . import views
 
 
 def get_frontend_urls():
-    return [path('plot', views.first_plot)]
+    return [path("plot", views.first_plot)]

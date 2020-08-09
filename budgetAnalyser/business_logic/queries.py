@@ -7,16 +7,13 @@ from rule_system.models import CategorizationRule
 
 
 def account_from_request(request):
-    return get_object_or_404(Account,
-                             user_id=request.user.id,
-                             pk=request.POST['account'],
-                             )
+    return get_object_or_404(
+        Account, user_id=request.user.id, pk=request.POST["account"],
+    )
 
 
 def bank_from_request(request):
-    return get_object_or_404(Bank,
-                             user=request.user.id,
-                             pk=request.POST['bank'])
+    return get_object_or_404(Bank, user=request.user.id, pk=request.POST["bank"])
 
 
 def get_uncategorized_user_transactions(request):
@@ -24,10 +21,12 @@ def get_uncategorized_user_transactions(request):
 
 
 def insert_categorization_rule(request):
-    return CategorizationRule.objects.get_or_create(name=request.POST['name'],
-                                                    rule=request.POST['rule'],
-                                                    effect_value_id=request.POST['effect_value'],
-                                                    user=request.user)[0]
+    return CategorizationRule.objects.get_or_create(
+        name=request.POST["name"],
+        rule=request.POST["rule"],
+        effect_value_id=request.POST["effect_value"],
+        user=request.user,
+    )[0]
 
 
 def get_all_categorization_rules(request=None):

@@ -22,14 +22,14 @@ def handle_transactions_upload(request):
     account = queries.account_from_request(request)
     uploaded_at = pytz.utc.localize(datetime.now())
     filepath = helpers.filepath_to_store_uploaded_transaction(
-        request.user, bank, account, uploaded_at)
-    entry_file = _add_entry_to_uploaded_files_table(
-        request.user, account, uploaded_at)
-    utils.save_uploaded_file(filepath, request.FILES['file'])
-    _save_account_values_from_file_to_db(
-        filepath, account, request.user, entry_file)
+        request.user, bank, account, uploaded_at
+    )
+    entry_file = _add_entry_to_uploaded_files_table(request.user, account, uploaded_at)
+    utils.save_uploaded_file(filepath, request.FILES["file"])
+    _save_account_values_from_file_to_db(filepath, account, request.user, entry_file)
     transactions_new, transactions_old = _save_transactions_from_file_to_db(
-        filepath, account, request.user, entry_file)
+        filepath, account, request.user, entry_file
+    )
 
     _apply_rules_to_uncategorized_transactions(request)
     all_trans = transactions_new + transactions_old
@@ -53,44 +53,51 @@ def handle_rule_creation(request):
     rule = queries.insert_categorization_rule(request)
     utils.apply_rule_to_users_transactions(rule, request.user)
 
+
 def handle_investment_input(request):
     account = queries.account_from_request(request)
-    price = float(request.POST['price_in_CLP'])
-    amount = float(request.POST['amount_in_account_CURRENCY'])
-    date = request.POST['date']
-    is_income = request.POST.get('is_income', False)
-    description = "Invest_{}_for_{}_on_{}_to_{}".format(amount,
-                                                        price,
-                                                        date,
-                                                        account.name)
+    price = float(request.POST["price_in_CLP"])
+    amount = float(request.POST["amount_in_account_CURRENCY"])
+    date = request.POST["date"]
+    is_income = request.POST.get("is_income", False)
+    description = "Invest_{}_for_{}_on_{}_to_{}".format(
+        amount, price, date, account.name
+    )
     rate = price / amount
     prev_amount = AccountValue.objects.filter(
-            account=account, valued_at__lt=date
-        ).order_by('-valued_at')
+        account=account, valued_at__lt=date
+    ).order_by("-valued_at")
     if prev_amount:
         prev_amount = prev_amount[0].value
     else:
         prev_amount = 0
     print("previous amount", prev_amount)
-    _add_account_value(user=request.user,
-                       account=account,
-                       value=round(prev_amount + amount, 2),
-                       valued_at=date)
-    _add_transaction(user=request.user,
-                     account=account,
-                     amount=price,
-                     type='income' if is_income else 'neutral',
-                     transaction_id=helpers.build_transaction_id(
-                        {"date": datetime.strptime(date, "%Y-%m-%d"),
-                         "description": description,
-                         "amount": price, "user_id":request.user.id,
-                         "account_id": account.id}, "investment"),
-                     description=description,
-                     date=date,
-                     category_id=24 if is_income else 15,
-                     data_file_id=51,
-                     )
-
+    _add_account_value(
+        user=request.user,
+        account=account,
+        value=round(prev_amount + amount, 2),
+        valued_at=date,
+    )
+    _add_transaction(
+        user=request.user,
+        account=account,
+        amount=price,
+        type="income" if is_income else "neutral",
+        transaction_id=helpers.build_transaction_id(
+            {
+                "date": datetime.strptime(date, "%Y-%m-%d"),
+                "description": description,
+                "amount": price,
+                "user_id": request.user.id,
+                "account_id": account.id,
+            },
+            "investment",
+        ),
+        description=description,
+        date=date,
+        category_id=24 if is_income else 15,
+        data_file_id=51,
+    )
 
 
 # Internal Module Functions
@@ -118,6 +125,7 @@ def _add_transaction(**kwargs):
         print("ignore that...")
         print(e)
         return False
+
 
 def _add_account_value(**kwargs):
     try:
@@ -168,15 +176,13 @@ def _save_account_values_from_file_to_db(filepath, account, user, file):
 
 
 def _add_entry_to_uploaded_files_table(user, account, uploaded_at):
-    entry = UploadedFile.objects.create(user_id=user.id,
-                                        account_id=account.id,
-                                        uploaded_at=uploaded_at)
+    entry = UploadedFile.objects.create(
+        user_id=user.id, account_id=account.id, uploaded_at=uploaded_at
+    )
     return entry
 
 
-def _change_account_value_based_on_transactions(transactions,
-                                                account,
-                                                user):
+def _change_account_value_based_on_transactions(transactions, account, user):
     print("Updating Account Value")
     # find all account values AT MOMENT OR AFTER the transaction was done (usually empty)
     # find account value previous to moment transaction was done

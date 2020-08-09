@@ -8,7 +8,7 @@ from rule_system.models import CategorizationRule
 
 
 class CategorizationRuleListView(generic.ListView):
-    template_name = 'categorization/rules/list.html'
+    template_name = "categorization/rules/list.html"
 
     def get_queryset(self):
         return CategorizationRule.objects.filter(user=self.request.user)
@@ -16,16 +16,16 @@ class CategorizationRuleListView(generic.ListView):
 
 class CategorizationRuleCreateView(generic.CreateView):
     form_class = CreateCategorizationRuleForm
-    template_name = 'categorization/rules/create.html'
+    template_name = "categorization/rules/create.html"
 
     def get(self, request, *args, **kwarg):
         form = self.form_class()
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {"form": form})
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, request.FILES)
         if form.is_valid():
             handlers.handle_rule_creation(request)
-            return HttpResponseRedirect('/categorization/rules')
+            return HttpResponseRedirect("/categorization/rules")
 
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {"form": form})

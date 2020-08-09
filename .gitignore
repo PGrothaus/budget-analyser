@@ -137,3 +137,7 @@ budgetAnalyser/other/*
 # Node
 node_modules/*
 .DS_STORE
+
+
+# execs
+geckodriver
