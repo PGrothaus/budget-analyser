@@ -20,6 +20,10 @@ python-dotenv
 markdown
 regex
 
+# Webscraping
+selenium==3.141.0
+selenium-wire==2.1.0
+
 # Logical
 json-logic-qubit
 
